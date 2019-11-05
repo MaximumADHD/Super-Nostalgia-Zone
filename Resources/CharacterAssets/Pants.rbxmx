@@ -1,0 +1,18 @@
+<roblox version="4">
+	<Item class="Pants" referent="RBXF90EBC2AF673450B9D01CD2F5A49061F">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<Color3 name="Color3">
+				<R>1</R>
+				<G>1</G>
+				<B>1</B>
+			</Color3>
+			<string name="Name">Pants</string>
+			<Content name="PantsTemplate">
+				<url>rbxassetid://1110695628</url>
+			</Content>
+			<BinaryString name="Tags"></BinaryString>
+			<bool name="Archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>

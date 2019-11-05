@@ -1,0 +1,153 @@
+<roblox version="4">
+	<Item class="Part" referent="RBXF73421027C024AE8802989A7A598B6B7">
+		<Properties>
+			<bool name="Anchored">true</bool>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<float name="BackParamA">-0.5</float>
+			<float name="BackParamB">0.5</float>
+			<token name="BackSurface">0</token>
+			<token name="BackSurfaceInput">0</token>
+			<float name="BottomParamA">-0.5</float>
+			<float name="BottomParamB">0.5</float>
+			<token name="BottomSurface">0</token>
+			<token name="BottomSurfaceInput">0</token>
+			<CoordinateFrame name="CFrame">
+				<X>-85.06</X>
+				<Y>0.025018</Y>
+				<Z>62.01</Z>
+				<R00>0</R00>
+				<R01>0</R01>
+				<R02>-1</R02>
+				<R10>0</R10>
+				<R11>1</R11>
+				<R12>0</R12>
+				<R20>1</R20>
+				<R21>0</R21>
+				<R22>0</R22>
+			</CoordinateFrame>
+			<bool name="CanCollide">false</bool>
+			<bool name="CastShadow">true</bool>
+			<int name="CollisionGroupId">0</int>
+			<Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+			<PhysicalProperties name="CustomPhysicalProperties">
+				<CustomPhysics>false</CustomPhysics>
+			</PhysicalProperties>
+			<float name="FrontParamA">-0.5</float>
+			<float name="FrontParamB">0.5</float>
+			<token name="FrontSurface">0</token>
+			<token name="FrontSurfaceInput">0</token>
+			<float name="LeftParamA">-0.5</float>
+			<float name="LeftParamB">0.5</float>
+			<token name="LeftSurface">0</token>
+			<token name="LeftSurfaceInput">0</token>
+			<bool name="Locked">true</bool>
+			<bool name="Massless">false</bool>
+			<token name="Material">256</token>
+			<string name="Name">Rays</string>
+			<float name="Reflectance">0</float>
+			<float name="RightParamA">-0.5</float>
+			<float name="RightParamB">0.5</float>
+			<token name="RightSurface">0</token>
+			<token name="RightSurfaceInput">0</token>
+			<int name="RootPriority">0</int>
+			<Vector3 name="RotVelocity">
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+			</Vector3>
+			<BinaryString name="Tags"></BinaryString>
+			<float name="TopParamA">-0.5</float>
+			<float name="TopParamB">0.5</float>
+			<token name="TopSurface">0</token>
+			<token name="TopSurfaceInput">0</token>
+			<float name="Transparency">1</float>
+			<Vector3 name="Velocity">
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+			</Vector3>
+			<token name="formFactorRaw">1</token>
+			<token name="shape">1</token>
+			<Vector3 name="size">
+				<X>0.05</X>
+				<Y>0.05</Y>
+				<Z>0.05</Z>
+			</Vector3>
+			<bool name="Archivable">true</bool>
+		</Properties>
+		<Item class="Attachment" referent="RBX06B41274A1604F5E9F7C6D5B74C7CF50">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<CoordinateFrame name="CFrame">
+					<X>-1</X>
+					<Y>0</Y>
+					<Z>0</Z>
+					<R00>1</R00>
+					<R01>0</R01>
+					<R02>0</R02>
+					<R10>0</R10>
+					<R11>1</R11>
+					<R12>0</R12>
+					<R20>0</R20>
+					<R21>0</R21>
+					<R22>1</R22>
+				</CoordinateFrame>
+				<string name="Name">Ray0</string>
+				<BinaryString name="Tags"></BinaryString>
+				<bool name="Visible">false</bool>
+				<bool name="Archivable">true</bool>
+			</Properties>
+		</Item>
+		<Item class="Attachment" referent="RBX3965BDEF98754F7DA4F5245A097859B0">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<CoordinateFrame name="CFrame">
+					<X>1</X>
+					<Y>0</Y>
+					<Z>0</Z>
+					<R00>1</R00>
+					<R01>0</R01>
+					<R02>0</R02>
+					<R10>0</R10>
+					<R11>1</R11>
+					<R12>0</R12>
+					<R20>0</R20>
+					<R21>0</R21>
+					<R22>1</R22>
+				</CoordinateFrame>
+				<string name="Name">Ray1</string>
+				<BinaryString name="Tags"></BinaryString>
+				<bool name="Visible">false</bool>
+				<bool name="Archivable">true</bool>
+			</Properties>
+		</Item>
+		<Item class="Beam" referent="RBX58411C18B4C6440BB4E9178B1A59BF6A">
+			<Properties>
+				<Ref name="Attachment0">RBX06B41274A1604F5E9F7C6D5B74C7CF50</Ref>
+				<Ref name="Attachment1">RBX3965BDEF98754F7DA4F5245A097859B0</Ref>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<ColorSequence name="Color">0 1 1 1 0 1 1 1 1 0 </ColorSequence>
+				<float name="CurveSize0">0</float>
+				<float name="CurveSize1">0</float>
+				<bool name="Enabled">true</bool>
+				<bool name="FaceCamera">false</bool>
+				<float name="LightEmission">1</float>
+				<float name="LightInfluence">0</float>
+				<string name="Name">SunRays</string>
+				<int name="Segments">1</int>
+				<BinaryString name="Tags"></BinaryString>
+				<Content name="Texture">
+					<url>rbxasset://sky/sun-rays.jpg</url>
+				</Content>
+				<float name="TextureLength">1</float>
+				<token name="TextureMode">0</token>
+				<float name="TextureSpeed">0</float>
+				<NumberSequence name="Transparency">0 0.5 0 1 0.5 0 </NumberSequence>
+				<float name="Width0">2</float>
+				<float name="Width1">2</float>
+				<float name="ZOffset">0</float>
+				<bool name="Archivable">true</bool>
+			</Properties>
+		</Item>
+	</Item>
+</roblox>

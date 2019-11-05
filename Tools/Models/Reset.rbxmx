@@ -1,0 +1,41 @@
+<roblox version="4">
+	<Item class="Tool" referent="RBX25FBA9486D014D8C8E5A7FBBB20C695C">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<bool name="CanBeDropped">true</bool>
+			<bool name="Enabled">true</bool>
+			<CoordinateFrame name="Grip">
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+				<R00>1</R00>
+				<R01>0</R01>
+				<R02>0</R02>
+				<R10>0</R10>
+				<R11>1</R11>
+				<R12>0</R12>
+				<R20>0</R20>
+				<R21>0</R21>
+				<R22>1</R22>
+			</CoordinateFrame>
+			<bool name="ManualActivationOnly">false</bool>
+			<string name="Name">Reset</string>
+			<bool name="RequiresHandle">false</bool>
+			<BinaryString name="Tags"></BinaryString>
+			<Content name="TextureId">
+				<null></null>
+			</Content>
+			<string name="ToolTip"></string>
+			<bool name="Archivable">true</bool>
+		</Properties>
+		<Item class="StringValue" referent="RBX45067B370BF24884BFE1D63E83D94E62">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<string name="Name">IconOverride</string>
+				<BinaryString name="Tags"></BinaryString>
+				<string name="Value">rbxassetid://1000000</string>
+				<bool name="Archivable">true</bool>
+			</Properties>
+		</Item>
+	</Item>
+</roblox>

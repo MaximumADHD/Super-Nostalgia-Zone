@@ -1,0 +1,24 @@
+<roblox version="4">
+	<Item class="Sound" referent="RBX9975433F62394710991D3F87E3DC1CAA">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<float name="EmitterSize">10</float>
+			<bool name="Looped">false</bool>
+			<string name="Name">Click</string>
+			<bool name="PlayOnRemove">false</bool>
+			<float name="PlaybackSpeed">1</float>
+			<bool name="Playing">false</bool>
+			<token name="RollOffMode">0</token>
+			<Ref name="SoundGroup">null</Ref>
+			<Content name="SoundId">
+				<url>rbxasset://sounds/switch.mp3</url>
+			</Content>
+			<BinaryString name="Tags"></BinaryString>
+			<double name="TimePosition">0</double>
+			<float name="Volume">0.5</float>
+			<float name="xmlRead_MaxDistance_3">10000</float>
+			<float name="xmlRead_MinDistance_3">10</float>
+			<bool name="Archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>

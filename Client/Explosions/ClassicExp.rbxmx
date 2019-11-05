@@ -1,0 +1,38 @@
+<roblox version="4">
+	<Item class="ParticleEmitter" referent="RBXC90F783B636444DEB505CF11032972AF">
+		<Properties>
+			<Vector3 name="Acceleration">
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+			</Vector3>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<ColorSequence name="Color">0 1 1 1 0 1 0.498039 0.498039 0.498039 0 </ColorSequence>
+			<float name="Drag">0</float>
+			<token name="EmissionDirection">1</token>
+			<bool name="Enabled">false</bool>
+			<NumberRange name="Lifetime">0.3 0.5 </NumberRange>
+			<float name="LightEmission">1</float>
+			<float name="LightInfluence">0</float>
+			<bool name="LockedToPart">false</bool>
+			<string name="Name">ClassicExp</string>
+			<float name="Rate">500</float>
+			<NumberRange name="RotSpeed">0 0 </NumberRange>
+			<NumberRange name="Rotation">0 0 </NumberRange>
+			<NumberSequence name="Size">0 3 1.1875 0.75 2.62 0 1 0 0 </NumberSequence>
+			<NumberRange name="Speed">20 25 </NumberRange>
+			<Vector2 name="SpreadAngle">
+				<X>360</X>
+				<Y>360</Y>
+			</Vector2>
+			<BinaryString name="Tags"></BinaryString>
+			<Content name="Texture">
+				<url>rbxassetid://334788053</url>
+			</Content>
+			<NumberSequence name="Transparency">0 0 0 0.993111 0.1625 0 1 1 0 </NumberSequence>
+			<float name="VelocityInheritance">0</float>
+			<float name="ZOffset">3</float>
+			<bool name="Archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>

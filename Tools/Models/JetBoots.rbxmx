@@ -1,0 +1,32 @@
+<roblox version="4">
+	<Item class="Tool" referent="RBX1E297C4299AC45D4AFE7155D66F7FEF0">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<bool name="CanBeDropped">true</bool>
+			<bool name="Enabled">true</bool>
+			<CoordinateFrame name="Grip">
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+				<R00>1</R00>
+				<R01>0</R01>
+				<R02>0</R02>
+				<R10>0</R10>
+				<R11>1</R11>
+				<R12>0</R12>
+				<R20>0</R20>
+				<R21>0</R21>
+				<R22>1</R22>
+			</CoordinateFrame>
+			<bool name="ManualActivationOnly">false</bool>
+			<string name="Name">JetBoots</string>
+			<bool name="RequiresHandle">false</bool>
+			<BinaryString name="Tags"></BinaryString>
+			<Content name="TextureId">
+				<url>rbxasset://Textures/Rocketboots.png</url>
+			</Content>
+			<string name="ToolTip"></string>
+			<bool name="Archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>

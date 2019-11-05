@@ -1,0 +1,54 @@
+{
+	"name": "MainModule",
+	
+	"tree":
+	{
+		"$path": "main.lua",
+		
+		"ReplicatedFirst":
+		{
+			"$className": "Folder",
+			
+			"JoinScript":
+			{
+				"$path": "Resources/GameJoin"
+			}
+		},
+		
+		"ReplicatedStorage":
+		{
+			"$className": "Folder",
+			
+			"SafeChatTree":
+			{
+				"$path": "Resources/SafeChat"
+			}
+		},
+		
+		"StarterGui":
+		{
+			"$className": "Folder",
+			
+			"UI":
+			{
+				"$className": "ScreenGui",
+				"$path": "UI"
+			}
+		},
+		
+		"ServerScriptService":
+		{
+			"$path": "Server"
+		},
+		
+		"StarterPlayerScripts":
+		{
+			"$path": "Client"
+		},
+		
+		"StarterCharacterScripts":
+		{
+			"$path": "Character"
+		}
+	}
+}

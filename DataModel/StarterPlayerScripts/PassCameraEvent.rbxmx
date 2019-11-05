@@ -1,0 +1,10 @@
+<roblox version="4">
+	<Item class="BindableEvent" referent="RBX683013E92D5E4F5C9C0CC64C96398A95">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<string name="Name">PassCameraEvent</string>
+			<BinaryString name="Tags"></BinaryString>
+			<bool name="Archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>

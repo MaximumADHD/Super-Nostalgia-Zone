@@ -1,0 +1,76 @@
+<roblox version="4">
+	<Item class="Tool" referent="RBX3F43403C94D9454B8CCB58C2A4D9BDB4">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<bool name="CanBeDropped">true</bool>
+			<bool name="Enabled">true</bool>
+			<CoordinateFrame name="Grip">
+				<X>0.7</X>
+				<Y>0</Y>
+				<Z>-0.5</Z>
+				<R00>0</R00>
+				<R01>0</R01>
+				<R02>-1</R02>
+				<R10>-1</R10>
+				<R11>0</R11>
+				<R12>0</R12>
+				<R20>0</R20>
+				<R21>1</R21>
+				<R22>0</R22>
+			</CoordinateFrame>
+			<bool name="ManualActivationOnly">false</bool>
+			<string name="Name">Multirocket</string>
+			<bool name="RequiresHandle">false</bool>
+			<BinaryString name="Tags"></BinaryString>
+			<Content name="TextureId">
+				<url>rbxasset://Textures/Multirocket.png</url>
+			</Content>
+			<string name="ToolTip"></string>
+			<bool name="Archivable">true</bool>
+		</Properties>
+		<Item class="Sound" referent="RBX8BFC681B539B464DB72DBA4A0339CB50">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<float name="EmitterSize">10</float>
+				<bool name="Looped">true</bool>
+				<string name="Name">Swoosh</string>
+				<bool name="PlayOnRemove">false</bool>
+				<float name="PlaybackSpeed">1</float>
+				<bool name="Playing">false</bool>
+				<token name="RollOffMode">0</token>
+				<Ref name="SoundGroup">null</Ref>
+				<Content name="SoundId">
+					<url>rbxasset://sounds/Rocket whoosh 01.wav</url>
+				</Content>
+				<BinaryString name="Tags"></BinaryString>
+				<double name="TimePosition">0</double>
+				<float name="Volume">0.7</float>
+				<float name="xmlRead_MaxDistance_3">10000</float>
+				<float name="xmlRead_MinDistance_3">10</float>
+				<bool name="Archivable">true</bool>
+			</Properties>
+		</Item>
+		<Item class="Sound" referent="RBX5536D9698BD845ECAA41437A794C7512">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<float name="EmitterSize">10</float>
+				<bool name="Looped">false</bool>
+				<string name="Name">Explosion</string>
+				<bool name="PlayOnRemove">false</bool>
+				<float name="PlaybackSpeed">1</float>
+				<bool name="Playing">false</bool>
+				<token name="RollOffMode">0</token>
+				<Ref name="SoundGroup">null</Ref>
+				<Content name="SoundId">
+					<url>rbxasset://sounds/collide.wav</url>
+				</Content>
+				<BinaryString name="Tags"></BinaryString>
+				<double name="TimePosition">0</double>
+				<float name="Volume">1</float>
+				<float name="xmlRead_MaxDistance_3">10000</float>
+				<float name="xmlRead_MinDistance_3">10</float>
+				<bool name="Archivable">true</bool>
+			</Properties>
+		</Item>
+	</Item>
+</roblox>

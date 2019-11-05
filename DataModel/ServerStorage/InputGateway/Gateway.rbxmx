@@ -1,0 +1,10 @@
+<roblox version="4">
+	<Item class="RemoteEvent" referent="RBX35D3FDA6FD7F4E948C4620D48F40D896">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<string name="Name">Gateway</string>
+			<BinaryString name="Tags"></BinaryString>
+			<bool name="Archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>
