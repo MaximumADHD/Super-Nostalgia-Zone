@@ -1,0 +1,35 @@
+{
+	"ClassName": "Part",
+	
+	"Properties":
+	{
+		"Size": [4.92, 0.74, 0.84],
+		
+		"TopSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		},
+		
+		"BottomSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		}
+	},
+	
+	"Children":
+	[
+		{
+			"Name": "Mesh",
+			"ClassName": "SpecialMesh",
+			
+			"Properties":
+			{
+				"Scale": [0.75, 0.75, 0.75],
+				"MeshId": "rbxasset://fonts/rocketlauncher.mesh",
+				"TextureId": "rbxasset://textures/rocketlaunchertex.png"
+			}
+		}
+	]
+}

@@ -1,4 +1,4 @@
 @echo off
-rojo serve place.project.json
+rojo serve place.project.json 
 
 pause

@@ -1,0 +1,17 @@
+{
+	"className": "Tool",
+	
+	"properties":
+	{
+		"Grip":
+		[
+			0, -0.7, 0,
+			
+			1, 0, 0,
+			0, 1, 0,
+			0, 0, 1
+		],
+		
+		"TextureId": "rbxasset://Textures/Slingshot.png"
+	}
+}

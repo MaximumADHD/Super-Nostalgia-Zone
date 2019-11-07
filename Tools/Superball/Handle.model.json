@@ -1,0 +1,37 @@
+{
+	"ClassName": "Part",
+	
+	"Properties":
+	{
+		"Color": [0.768628, 0.156863, 0.109804],
+		"Reflectance": 0.2,
+		
+		"Material":
+		{
+			"Type": "Enum",
+			"Value": 272
+		},
+		
+		"Shape":
+		{
+			"Type": "Enum",
+			"Value": 0
+		},
+		
+		"Size": [2, 2, 2]
+	},
+	
+	"Children":
+	[
+		{
+			"Name": "Boing",
+			"ClassName": "Sound",
+			
+			"Properties":
+			{
+				"SoundId": "rbxasset://sounds//short spring sound.wav",
+				"Volume": 1
+			}
+		}
+	]
+}

@@ -1,0 +1,33 @@
+{
+	"ClassName": "Part",
+	
+	"Properties":
+	{
+		"Size": [1, 4.4, 1]
+	},
+	
+	"Children":
+	[
+		{
+			"Name": "Mesh",
+			"ClassName": "SpecialMesh",
+			
+			"Properties":
+			{
+				"MeshId": "rbxasset://fonts/trowel.mesh",
+				"TextureId": "rbxasset://textures/TrowelTexture.png"
+			}
+		},
+		
+		{
+			"Name": "BuildSound",
+			"ClassName": "Sound",
+			
+			"Properties":
+			{
+				"SoundId": "rbxasset://sounds//bass.wav",
+				"Volume": 1
+			}
+		}
+	]
+}

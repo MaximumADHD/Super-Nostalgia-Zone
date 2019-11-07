@@ -1,0 +1,9 @@
+{
+	"className": "Tool",
+	
+	"properties":
+	{
+		"RequiresHandle": false,
+		"TextureId": "rbxasset://Textures/Rocketboots.png"
+	}
+}

@@ -1,0 +1,34 @@
+{
+	"ClassName": "Part",
+	
+	"Properties":
+	{
+		"Size": [3, 2, 1],
+		
+		"TopSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		},
+		
+		"BottomSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		}
+	},
+	
+	"Children":
+	[
+		{
+			"Name": "Mesh",
+			"ClassName": "SpecialMesh",
+			
+			"Properties":
+			{
+				"MeshId": "rbxassetid://998137795",
+				"TextureId": "rbxasset://textures/PaintballGunTex128.png"
+			}
+		}
+	]
+}

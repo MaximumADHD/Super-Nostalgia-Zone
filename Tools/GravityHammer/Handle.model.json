@@ -1,0 +1,45 @@
+{
+	"ClassName": "Part",
+	
+	"Properties":
+	{
+		"Size": [1, 0.8, 10],
+		
+		"TopSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		},
+		
+		"BottomSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		}
+	},
+	
+	"Children":
+	[
+		{
+			"Name": "Mesh",
+			"ClassName": "SpecialMesh",
+			
+			"Properties":
+			{
+				"Scale": [0.05, 0.05, 0.05],
+				"MeshId": "rbxassetid://1256290",
+				"TextureId": "rbxassetid://1256283"
+			}
+		},
+		{
+			"Name": "Sound",
+			"ClassName": "Sound",
+			
+			"Properties":
+			{
+				"SoundId": "rbxassetid://1255794",
+				"Volume": 1
+			}
+		}
+	]
+}

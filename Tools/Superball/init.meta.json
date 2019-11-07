@@ -1,0 +1,8 @@
+{
+	"className": "Tool",
+	
+	"properties":
+	{
+		"TextureId": "rbxasset://Textures/Superball.png"
+	}
+}

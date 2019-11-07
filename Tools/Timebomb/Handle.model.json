@@ -1,0 +1,28 @@
+{
+	"ClassName": "Part",
+	
+	"Properties":
+	{	
+		"Shape":
+		{
+			"Type": "Enum",
+			"Value": 0
+		},
+		
+		"Size": [2, 2, 2]
+	},
+	
+	"Children":
+	[
+		{
+			"Name": "Mesh",
+			"ClassName": "SpecialMesh",
+			
+			"Properties":
+			{
+				"MeshId": "rbxasset://fonts/timebomb.mesh",
+				"TextureId": "rbxasset://textures/bombtex.png"
+			}
+		}
+	]
+}

@@ -1,36 +1,76 @@
 {
-	"name": "Roblox-PNG-Library",
+	"name": "Super Nostalgia Zone",
 	
 	"tree": 
 	{
 		"$className": "DataModel",
 		
-		"ReplicatedStorage":
+		"ServerStorage":
 		{
-			"$className": "ReplicatedStorage",
+			"$className": "ServerStorage",
 			
-			"PNG":
+			"MainModule":
 			{
 				"$path": "init.lua",
 				
-				"Chunks":
+				"ReplicatedFirst":
 				{
-					"$path": "Chunks"
+					"$className": "Folder",
+					
+					"JoinScript":
+					{
+						"$path": "Resources/GameJoin"
+					}
 				},
 				
-				"BinaryReader":
+				"ReplicatedStorage":
 				{
-					"$path": "Modules/BinaryReader.lua"
+					"$className": "Folder",
+					
+					"SafeChatTree":
+					{
+						"$path": "Resources/SafeChat"
+					}
 				},
 				
-				"Deflate":
+				"ServerStorage":
 				{
-					"$path": "Modules/Deflate.lua"
+					"$className": "Folder",
+					
+					"StandardTools":
+					{
+						"$path": "Tools"
+					}
 				},
 				
-				"Unfilter":
+				"StarterGui":
 				{
-					"$path": "Modules/Unfilter.lua"
+					"$className": "Folder",
+					
+					"UI":
+					{
+						"$className": "ScreenGui",
+						
+						"RootFrame":
+						{
+							"$path": "UI"
+						}
+					}
+				},
+				
+				"ServerScriptService":
+				{
+					"$path": "Server"
+				},
+				
+				"StarterPlayerScripts":
+				{
+					"$path": "Client"
+				},
+				
+				"StarterCharacterScripts":
+				{
+					"$path": "Character"
 				}
 			}
 		}

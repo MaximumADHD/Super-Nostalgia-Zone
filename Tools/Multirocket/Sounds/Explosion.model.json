@@ -1,0 +1,9 @@
+{
+	"ClassName": "Sound",
+	
+	"Properties":
+	{
+		"SoundId": "rbxasset://sounds/collide.wav",
+		"Volume": 1
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"className": "Part",
+	
+	"properties":
+	{
+		"Color": [0.105882, 0.164706, 0.207843],
+		"Size": [1, 1, 2],
+		
+		"TopSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		},
+		
+		"BottomSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		}
+	}
+}

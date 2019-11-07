@@ -3,7 +3,7 @@
 	
 	"tree":
 	{
-		"$path": "main.lua",
+		"$path": "init.lua",
 		
 		"ReplicatedFirst":
 		{
@@ -22,6 +22,21 @@
 			"SafeChatTree":
 			{
 				"$path": "Resources/SafeChat"
+			}
+		},
+		
+		"ServerStorage":
+		{
+			"$className": "Folder",
+			
+			"CoreBevelCache":
+			{
+				"$path": "Resources/BevelCache"
+			},
+			
+			"StandardTools":
+			{
+				"$path": "Tools"
 			}
 		},
 		

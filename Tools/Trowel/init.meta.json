@@ -1,0 +1,9 @@
+{
+	"className": "Tool",
+	
+	"properties":
+	{
+		"GripPos": [0, -1.3, 0],
+		"TextureId": "rbxasset://Textures/Wall.png"
+	}
+}

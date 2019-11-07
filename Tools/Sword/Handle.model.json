@@ -1,0 +1,34 @@
+{
+	"ClassName": "Part",
+	
+	"Properties":
+	{
+		"Size": [1, 0.8, 4],
+		
+		"TopSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		},
+		
+		"BottomSurface":
+		{
+			"Type": "Enum",
+			"Value": 0
+		}
+	},
+	
+	"Children":
+	[
+		{
+			"Name": "Mesh",
+			"ClassName": "SpecialMesh",
+			
+			"Properties":
+			{
+				"MeshId": "rbxasset://fonts/sword.mesh",
+				"TextureId": "rbxasset://textures/SwordTexture.png"
+			}
+		}
+	]
+}

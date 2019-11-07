@@ -1,0 +1,9 @@
+{
+	"className": "Frame",
+	
+	"properties":
+	{
+		"BackgroundTransparency": 1,
+		"Size": [1, 0, 1, 0]
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"className": "Tool",
+	
+	"properties":
+	{
+		"Grip":
+		[
+			0, 0, -1.5,
+			
+			0, 0, 1,
+			1, 0, 0,
+			0, 1, 0
+		],
+		
+		"TextureId": "rbxasset://Textures/Sword128.png"
+	}
+}
