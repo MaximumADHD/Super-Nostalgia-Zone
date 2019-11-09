@@ -12,9 +12,14 @@ local RunService = game:GetService("RunService")
 local Animators = {}
 
 local function createAnimator(humanoid)
-	local Figure = humanoid.Parent	
-	local Torso = Figure:WaitForChild("Torso")
-	local Climbing = Figure:WaitForChild("Climbing")
+	local Figure = humanoid.Parent
+
+	local Torso = Figure:WaitForChild("Torso", 5)
+	local Climbing = Figure:WaitForChild("Climbing", 5)
+
+	if not (Torso and Climbing) then
+		return
+	end
 	
 	local animator = {}
 	animator.Joints = {}
@@ -183,17 +188,13 @@ local function createAnimator(humanoid)
 	return animator
 end
 
-local function onAnimatorAdded(humanoid)
-	if humanoid:IsA("Humanoid") then
+local function createAnimatorAsync(humanoid, callback)
+	local async = coroutine.wrap(function ()
 		local animator = createAnimator(humanoid)
-		Animators[humanoid] = animator
-	end
-end
-
-local function onAnimatorRemoved(humanoid)
-	if Animators[humanoid] then
-		Animators[humanoid] = nil
-	end
+		callback(animator)
+	end)
+	
+	async()
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -205,10 +206,24 @@ local animTag = "Animator"
 local animAdded = CollectionService:GetInstanceAddedSignal(animTag)
 local animRemoved = CollectionService:GetInstanceRemovedSignal(animTag)
 
+local function onAnimatorAdded(humanoid)
+	if humanoid:IsA("Humanoid") then
+		createAnimatorAsync(humanoid, function (animator)
+			if CollectionService:HasTag(humanoid, animTag) then
+				Animators[humanoid] = animator
+			end
+		end)
+	end
+end
+
+local function onAnimatorRemoved(humanoid)
+	if Animators[humanoid] then
+		Animators[humanoid] = nil
+	end
+end
+
 for _,humanoid in pairs(CollectionService:GetTagged(animTag)) do
-	spawn(function ()
-		onAnimatorAdded(humanoid)
-	end)
+	onAnimatorAdded(humanoid)
 end
 
 animAdded:Connect(onAnimatorAdded)
@@ -218,11 +233,10 @@ animRemoved:Connect(onAnimatorRemoved)
 -- Motor Angle Updater 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local desiredFPS = 1 / 30 -- The framerate that would be expected given the MaxVelocity in use.
-local lastUpdate = tick()
+local desiredFPS = 30 -- The framerate that would be expected given the MaxVelocity in use.
 
 local function updateAnimations(deltaTime)
-	local velocityAdjust = (1 / desiredFPS) * deltaTime
+	local velocityAdjust = desiredFPS * deltaTime
 	
 	for humanoid, animator in pairs(Animators) do
 		-- Update the motor states

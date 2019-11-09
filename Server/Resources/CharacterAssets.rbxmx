@@ -1,0 +1,143 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<Meta name="ExplicitAutoJoints">true</Meta>
+	<External>null</External>
+	<External>nil</External>
+	<Item class="Folder" referent="RBX0671216DD8724E6D8D051844CF481DCE">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<string name="Name">CharacterAssets</string>
+			<BinaryString name="Tags"></BinaryString>
+		</Properties>
+		<Item class="BodyColors" referent="RBXA150CA367D6A4C1F9E84B6DE920B6C99">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<Color3 name="HeadColor3">
+					<R>0.960784376</R>
+					<G>0.80392158</G>
+					<B>0.188235298</B>
+				</Color3>
+				<Color3 name="LeftArmColor3">
+					<R>0.960784376</R>
+					<G>0.80392158</G>
+					<B>0.188235298</B>
+				</Color3>
+				<Color3 name="LeftLegColor3">
+					<R>0.643137276</R>
+					<G>0.741176486</G>
+					<B>0.278431386</B>
+				</Color3>
+				<string name="Name">BodyColors</string>
+				<Color3 name="RightArmColor3">
+					<R>0.960784376</R>
+					<G>0.80392158</G>
+					<B>0.188235298</B>
+				</Color3>
+				<Color3 name="RightLegColor3">
+					<R>0.643137276</R>
+					<G>0.741176486</G>
+					<B>0.278431386</B>
+				</Color3>
+				<BinaryString name="Tags"></BinaryString>
+				<Color3 name="TorsoColor3">
+					<R>0.0509804003</R>
+					<G>0.411764711</G>
+					<B>0.674509823</B>
+				</Color3>
+			</Properties>
+		</Item>
+		<Item class="Pants" referent="RBX31FA469E6C3C4F3DBE7E0444A5401B8B">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<Color3 name="Color3">
+					<R>1</R>
+					<G>1</G>
+					<B>1</B>
+				</Color3>
+				<string name="Name">Pants</string>
+				<Content name="PantsTemplate"><url>rbxassetid://1110695628</url></Content>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="Shirt" referent="RBXB0336FE25D3E4EB39E650E41F27B98F2">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<Color3 name="Color3">
+					<R>1</R>
+					<G>1</G>
+					<B>1</B>
+				</Color3>
+				<string name="Name">Shirt</string>
+				<Content name="ShirtTemplate"><url>rbxassetid://1110695025</url></Content>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="ShirtGraphic" referent="RBX83FFD5C00DBB411A81916D8E661D6578">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<Color3 name="Color3">
+					<R>1</R>
+					<G>1</G>
+					<B>1</B>
+				</Color3>
+				<Content name="Graphic"><null></null></Content>
+				<string name="Name">ShirtGraphic</string>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="CharacterMesh" referent="RBXB954AF1FA0AA4D5490A4B7B6F371786E">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<int64 name="BaseTextureId">0</int64>
+				<token name="BodyPart">2</token>
+				<int64 name="MeshId">1112256772</int64>
+				<string name="Name">CL_LeftArm</string>
+				<int64 name="OverlayTextureId">0</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="CharacterMesh" referent="RBX40811AF2E89147E9AD8A8A4D144C9ACF">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<int64 name="BaseTextureId">0</int64>
+				<token name="BodyPart">4</token>
+				<int64 name="MeshId">1112275294</int64>
+				<string name="Name">CL_LeftLeg</string>
+				<int64 name="OverlayTextureId">0</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="CharacterMesh" referent="RBX9C26FFD1EC6041DAA20951AEBECEC074">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<int64 name="BaseTextureId">0</int64>
+				<token name="BodyPart">3</token>
+				<int64 name="MeshId">1112244824</int64>
+				<string name="Name">CL_RightArm</string>
+				<int64 name="OverlayTextureId">0</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="CharacterMesh" referent="RBX014C72ED7C384ACD90CF1CAC6D72BFC5">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<int64 name="BaseTextureId">0</int64>
+				<token name="BodyPart">5</token>
+				<int64 name="MeshId">1112267576</int64>
+				<string name="Name">CL_RightLeg</string>
+				<int64 name="OverlayTextureId">0</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+		<Item class="CharacterMesh" referent="RBXBA7911C3A8A0491AA5936C2CFA96007E">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<int64 name="BaseTextureId">0</int64>
+				<token name="BodyPart">1</token>
+				<int64 name="MeshId">1112228624</int64>
+				<string name="Name">CL_Torso</string>
+				<int64 name="OverlayTextureId">0</int64>
+				<BinaryString name="Tags"></BinaryString>
+			</Properties>
+		</Item>
+	</Item>
+</roblox>

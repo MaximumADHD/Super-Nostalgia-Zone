@@ -1,3 +1,14 @@
 {
-	"className": "Frame"
+	"className": "Frame",
+
+	"properties":
+	{
+		"AnchorPoint": [0, 1],
+		
+		"BackgroundTransparency": 1,
+		"SizeConstraint": "RelativeYY",
+		
+		"Position": [0, 0, 1, 0],
+		"Size": [1, 0, 1, 0]
+	}
 }

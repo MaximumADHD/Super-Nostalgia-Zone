@@ -3,6 +3,14 @@
 	
 	"properties":
 	{
+		"Grip":
+		[
+			0,  0,  0,
+			1,  0,  0,
+			0,  0, -1,
+			0,  1,  0
+		],
+		
 		"TextureId": "rbxasset://Textures/Bomb.png"
 	}
 }

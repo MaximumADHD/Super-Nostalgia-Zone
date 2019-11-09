@@ -1,7 +1,7 @@
 local UserInputService = game:GetService("UserInputService")
 local GuiService = game:GetService("GuiService")
 
-local function addUIScale(obj,scale)
+local function addUIScale(obj, scale)
 	local uiScale = Instance.new("UIScale")
 	uiScale.Scale = scale
 	uiScale.Parent = obj
@@ -21,6 +21,7 @@ if GuiService:IsTenFootInterface() then
 	chat.Visible = false
 	
 	local chatPadding = gui:WaitForChild("ChatPadding", 1)
+	
 	if chatPadding then
 		chatPadding:Destroy()
 	end

@@ -1,3 +1,4 @@
+local Debris = game:GetService("Debris")
 local Tool = script.Parent
 
 local fireSound = Instance.new("Sound")
@@ -9,22 +10,15 @@ fireSound.Parent = Tool.Handle
 local colors = {45, 119, 21, 24, 23, 105, 104}
 
 
-function fire(v)
-
-	fireSound:play()
+local function fire(v)
+	fireSound:Play()
 	
-
 	local vCharacter = Tool.Parent
 	local vPlayer = game.Players:playerFromCharacter(vCharacter)
 
 	local missile = Instance.new("Part")
 
-        
-
 	local spawnPos = vCharacter.PrimaryPart.Position
-	
-
-
 	spawnPos  = spawnPos + (v * 8)
 
 	missile.Position = spawnPos
@@ -43,9 +37,7 @@ function fire(v)
 	force.force = Vector3.new(0,45,0)
 	force.Parent = missile
 	
-	Tool.BrickCleanup:clone().Parent = missile
-
-	local new_script = script.Parent.Paintball:clone()
+	local new_script = Tool.Paintball:clone()
 	new_script.Disabled = false
 	new_script.Parent = missile
 
@@ -54,10 +46,10 @@ function fire(v)
 	creator_tag.Name = "creator"
 	creator_tag.Parent = missile
 	
-
-
 	missile.Parent = game.Workspace
 	missile:SetNetworkOwner(vPlayer)
+
+	Debris:AddItem(missile, 24)
 end
 
 

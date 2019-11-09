@@ -1,13 +1,13 @@
 {
-	"name": "MainModule",
+	"name": "Super Nostalgia Zone",
 	
-	"tree":
+	"tree": 
 	{
-		"$path": "init.lua",
+		"$className": "DataModel",
 		
 		"ReplicatedFirst":
 		{
-			"$className": "Folder",
+			"$className": "ReplicatedFirst",
 			
 			"JoinScript":
 			{
@@ -17,24 +17,16 @@
 		
 		"ReplicatedStorage":
 		{
-			"$className": "Folder",
-			
-			"SafeChatTree":
-			{
-				"$path": "Resources/SafeChat"
-			}
+			"$className": "ReplicatedStorage",
+			"$path": "Shared"
 		},
 		
 		"ServerStorage":
 		{
-			"$className": "Folder",
-			
-			"CoreBevelCache":
-			{
-				"$path": "Resources/BevelCache"
-			},
-			
-			"StandardTools":
+			"$className": "ServerStorage",
+			"$path": "Server/Resources",
+
+			"Tools":
 			{
 				"$path": "Tools"
 			}
@@ -42,28 +34,54 @@
 		
 		"StarterGui":
 		{
-			"$className": "Folder",
+			"$className": "StarterGui",
 			
 			"UI":
 			{
-				"$className": "ScreenGui",
 				"$path": "UI"
+			},
+			
+			"DEPRECATED_UI":
+			{
+				"$className": "ScreenGui",
+
+				"RootFrame":
+				{
+					"$path": "Resources/RootFrame.rbxmx"
+				}
 			}
 		},
 		
-		"ServerScriptService":
+		"ServerScriptService": 
 		{
-			"$path": "Server"
+			"$className": "ServerScriptService",
+			"$path": "Server/Scripts"
 		},
 		
-		"StarterPlayerScripts":
+		"StarterPlayer":
 		{
-			"$path": "Client"
-		},
-		
-		"StarterCharacterScripts":
-		{
-			"$path": "Character"
+			"$className": "StarterPlayer",
+			
+			"$properties": 
+			{
+				
+				"DevComputerMovementMode": "KeyboardMouse",
+				"DevTouchCameraMovementMode": "Classic",
+				"LoadCharacterAppearance": false,
+				"GameSettingsAvatar": "R6"
+			},
+			
+			"StarterCharacterScripts":
+			{
+				"$className": "StarterCharacterScripts",
+				"$path": "Character"
+			},
+			
+			"StarterPlayerScripts":
+			{
+				"$className": "StarterPlayerScripts",
+				"$path": "Client"
+			}
 		}
 	}
 }

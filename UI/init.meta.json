@@ -1,9 +1,10 @@
 {
-	"className": "Frame",
+	"className": "ScreenGui",
 	
 	"properties":
 	{
-		"BackgroundTransparency": 1,
-		"Size": [1, 0, 1, 0]
+		"ResetOnSpawn": false,
+		"IgnoreGuiInset": true,
+		"ZIndexBehavior": "Sibling"
 	}
 }

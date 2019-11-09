@@ -4,7 +4,16 @@
 	"properties":
 	{
 		"CanBeDropped": false,
-		"GripPos": [0, 0, -3.25],
+
+		"Grip": 
+		[
+			0, 0, -3.25,
+			
+			0, 0, 1,
+			1, 0, 0,
+			0, 1, 0
+		],
+
 		"TextureId": "rbxassetid://1256305"
 	}
 }

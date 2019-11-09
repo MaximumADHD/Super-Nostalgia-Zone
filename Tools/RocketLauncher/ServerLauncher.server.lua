@@ -1,5 +1,5 @@
 local Tool = script.Parent
-local Sound = Tool.Sound
+local Sounds = Tool.Sounds
 
 local Rocket = Instance.new("Part")
 Rocket.Locked = true
@@ -13,8 +13,8 @@ Rocket.Size = Vector3.new(1,1,4)
 Rocket.BrickColor = BrickColor.new(23)
 
 Tool.RocketScript:clone().Parent = Rocket
-Sound.Explosion:clone().Parent = Rocket
-Sound.Swoosh:clone().Parent = Rocket
+Sounds.Explosion:clone().Parent = Rocket
+Sounds.Swoosh:clone().Parent = Rocket
 
 
 function fire(vTarget)

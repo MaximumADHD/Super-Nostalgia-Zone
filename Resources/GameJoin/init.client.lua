@@ -1,25 +1,21 @@
 local CollectionService = game:GetService("CollectionService")
-local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local TeleportService = game:GetService("TeleportService")
-local ReplicatedFirst = script.Parent
 local JointsService = game:GetService("JointsService")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 
-do
-	local StarterGui = game:GetService("StarterGui")
-	
-	local function setCoreSafe(method,...)
-		while not pcall(StarterGui.SetCore, StarterGui, method,...) do
+spawn(function ()
+	local function setCoreSafe(method, ...)
+		while not pcall(StarterGui.SetCore, StarterGui, method, ...) do
 			wait()
 		end
 	end
 	
-	spawn(function ()
-		setCoreSafe("ResetButtonCallback", false)
-	end)
-	
 	setCoreSafe("TopbarEnabled", false)
-end
+	setCoreSafe("ResetButtonCallback", false)
+end)
 
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -29,8 +25,13 @@ if not UserInputService.TouchEnabled then
 	mouse.Icon = "rbxassetid://334630296"
 end
 
-local guiRoot = script:WaitForChild("GuiRoot")
-guiRoot.Parent = playerGui
+local ui = script:FindFirstChild("UI")
+
+if ui then
+	ui.Parent = playerGui
+else
+	ui = playerGui:WaitForChild("UI")
+end
 
 ReplicatedFirst:RemoveDefaultLoadingScreen()
 
@@ -38,14 +39,12 @@ if playerGui:FindFirstChild("ConnectingGui") then
 	playerGui.ConnectingGui:Destroy()
 end
 
-if RunService:IsStudio() then
+--[[if RunService:IsStudio() then
 	return
-end
+end]]
 
-local c = workspace.CurrentCamera
-local IS_PHONE = c.ViewportSize.Y < 600
-
-local topbar = guiRoot:WaitForChild("Topbar")
+local IS_PHONE = ui.AbsoluteSize.Y < 600
+local topbar = ui:WaitForChild("Topbar")
 
 if IS_PHONE then
 	local uiScale = Instance.new("UIScale")
@@ -53,7 +52,7 @@ if IS_PHONE then
 	uiScale.Parent = topbar
 end
 
-local messageGui = guiRoot:WaitForChild("MessageGui")
+local messageGui = ui:WaitForChild("GameJoin")
 local message = messageGui:WaitForChild("Message")
 
 local partWatch = nil
@@ -90,9 +89,9 @@ end
 
 ---------------------------------------------------------------------
 
-local c = workspace.CurrentCamera
-c.CameraType = "Follow"
-c.CameraSubject = workspace
+local camera = workspace.CurrentCamera
+camera.CameraType = "Follow"
+camera.CameraSubject = workspace
 
 messageGui.Visible = true
 
@@ -140,7 +139,7 @@ if partWatch then
 	partWatch = nil
 end
 
-c.CameraSubject = nil
+camera.CameraSubject = nil
 message.Text = "Requesting character..."
 
 wait(1)
@@ -157,4 +156,4 @@ while not player.Character do
 end
 
 messageGui.Visible = false
-c.CameraType = "Custom"
+camera.CameraType = "Custom"

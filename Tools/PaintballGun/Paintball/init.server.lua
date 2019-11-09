@@ -1,3 +1,5 @@
+local Debris = game:GetService("Debris")
+
 ball = script.Parent
 damage = 20
 
@@ -24,9 +26,8 @@ function onTouched(hit)
 		s.Velocity = 15 * v
 		s.CFrame = CFrame.new(ball.Position + v, v)
 		
-		ball.BrickCleanup:clone().Parent = s
+		Debris:AddItem(s, 24)
 		
-		s.BrickCleanup.Disabled = false
 		s.Parent = game.Workspace
 	end
 	
@@ -66,7 +67,6 @@ function tagHumanoid(humanoid)
 		new_tag.Parent = humanoid
 	end
 end
-
 
 function untagHumanoid(humanoid)
 	if humanoid ~= nil then

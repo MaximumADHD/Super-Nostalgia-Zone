@@ -1,0 +1,12 @@
+{
+    "ClassName": "UIPadding",
+
+    "Properties":
+    {
+        "PaddingBottom": 
+        {
+            "Type": "UDim",
+            "Value": [0, 20]
+        }
+    }
+}
