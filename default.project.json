@@ -1,7 +1,7 @@
 {
 	"name": "Super Nostalgia Zone",
 	
-	"tree": 
+	"tree":
 	{
 		"$className": "DataModel",
 		
@@ -11,10 +11,15 @@
 			
 			"JoinScript":
 			{
-				"$path": "Resources/GameJoin"
+				"$path": "join.client.lua",
+
+				"UI": 
+				{
+					"$path": "UI"
+				}
 			}
 		},
-		
+
 		"ReplicatedStorage":
 		{
 			"$className": "ReplicatedStorage",
@@ -25,7 +30,7 @@
 		{
 			"$className": "ServerStorage",
 			"$path": "Server/Resources",
-
+			
 			"Tools":
 			{
 				"$path": "Tools"
@@ -36,18 +41,13 @@
 		{
 			"$className": "StarterGui",
 			
-			"UI":
+			"UI [PREVIEW, DO NOT EDIT]":
 			{
-				"$path": "UI"
-			},
-			
-			"DEPRECATED_UI":
-			{
-				"$className": "ScreenGui",
-
-				"RootFrame":
+				"$path": "UI",
+				
+				"$properties":
 				{
-					"$path": "Resources/RootFrame.rbxmx"
+					"Archivable": false
 				}
 			}
 		},
@@ -74,7 +74,7 @@
 			"StarterCharacterScripts":
 			{
 				"$className": "StarterCharacterScripts",
-				"$path": "Character"
+				"$path": "Player"
 			},
 			
 			"StarterPlayerScripts":

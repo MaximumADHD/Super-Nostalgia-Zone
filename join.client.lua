@@ -39,10 +39,6 @@ if playerGui:FindFirstChild("ConnectingGui") then
 	playerGui.ConnectingGui:Destroy()
 end
 
---[[if RunService:IsStudio() then
-	return
-end]]
-
 local IS_PHONE = ui.AbsoluteSize.Y < 600
 local topbar = ui:WaitForChild("Topbar")
 

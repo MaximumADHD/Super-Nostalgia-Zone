@@ -1,0 +1,51 @@
+{
+    "name": "MainModule",
+    
+    "tree":
+    {
+        "$path": "shared.lua",
+
+        "ReplicatedStorage":
+        {
+            "$className": "Folder",
+
+            "ItemData":    { "$path": "Shared/ItemData"        },
+            "AssetUtil":   { "$path": "Shared/AssetUtil.lua"   },
+            "BrickColors": { "$path": "Shared/BrickColors.lua" },
+            "PlaceData":   { "$path": "Shared/PlaceData.lua"   },
+            
+            "SharedScripts":
+            {
+                "$className": "Folder",
+                
+                "Sky":     {"$path": "Client/Sky"},
+                "Moon":    {"$path": "Client/Moon"},
+                "SunRays": {"$path": "Client/SunRays"},
+                
+                "Mouse":     {"$path": "UI/Mouse/Mouse.client.lua"  },
+                "FpsCap":    {"$path": "Client/FpsCap.client.lua"   },
+                "LensFlare": {"$path": "Client/LensFlare.client.lua"}
+            }
+        },
+
+        "ServerScriptService":
+        {
+            "$className": "Folder",
+
+            "LightingConfig":
+            {
+                "$path": "Server/Scripts/LightingConfig.server.lua"
+            }
+        },
+        
+        "ServerStorage":
+        {
+            "$className": "Folder",
+
+            "PlayerDataStore":
+            {
+                "$path": "Server/Resources/PlayerDataStore.lua"
+            }
+        }
+    }
+}

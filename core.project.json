@@ -1,0 +1,54 @@
+{
+	"name": "MainModule",
+	
+	"tree":
+	{
+		"$path": "core.lua",
+		
+		"ReplicatedFirst":
+		{
+			"$className": "Folder",
+			
+			"JoinScript":
+			{
+				"$path": "join.client.lua",
+				
+				"UI":
+				
+				{
+					"$path": "UI"
+				}
+			}
+		},
+		
+		"ReplicatedStorage":
+		{
+			"$path": "Shared"
+		},
+		
+		"ServerStorage":
+		{
+			"$path": "Server/Resources",
+			
+			"Tools":
+			{
+				"$path": "Tools"
+			}
+		},
+		
+		"ServerScriptService": 
+		{
+			"$path": "Server/Scripts"
+		},
+		
+		"StarterCharacterScripts":
+		{
+			"$path": "Player"
+		},
+		
+		"StarterPlayerScripts":
+		{
+			"$path": "Client"
+		}
+	}
+}

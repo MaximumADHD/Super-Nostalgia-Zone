@@ -9,7 +9,6 @@ fireSound.Parent = Tool.Handle
 
 local colors = {45, 119, 21, 24, 23, 105, 104}
 
-
 local function fire(v)
 	fireSound:Play()
 	
