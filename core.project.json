@@ -1,54 +1,58 @@
 {
-	"name": "MainModule",
+	"name": "SNZ_CORE",
 	
 	"tree":
 	{
-		"$path": "core.lua",
-		
-		"ReplicatedFirst":
+		"$className": "Folder",
+
+		"MainModule":
 		{
-			"$className": "Folder",
-			
-			"JoinScript":
+			"$path": "core.lua",
+
+			"ReplicatedFirst":
 			{
-				"$path": "join.client.lua",
+				"$className": "Folder",
 				
-				"UI":
-				
+				"JoinScript":
 				{
-					"$path": "UI"
+					"$path": "join.client.lua",
+					
+					"UI":
+					{
+						"$path": "UI"
+					}
 				}
-			}
-		},
-		
-		"ReplicatedStorage":
-		{
-			"$path": "Shared"
-		},
-		
-		"ServerStorage":
-		{
-			"$path": "Server/Resources",
+			},
 			
-			"Tools":
+			"ReplicatedStorage":
 			{
-				"$path": "Tools"
+				"$path": "Shared"
+			},
+			
+			"ServerStorage":
+			{
+				"$path": "Server/Resources",
+				
+				"StandardTools":
+				{
+					"$path": "Tools"
+				}
+			},
+			
+			"ServerScriptService": 
+			{
+				"$path": "Server/Scripts"
+			},
+			
+			"StarterCharacterScripts":
+			{
+				"$path": "Player"
+			},
+			
+			"StarterPlayerScripts":
+			{
+				"$path": "Client"
 			}
-		},
-		
-		"ServerScriptService": 
-		{
-			"$path": "Server/Scripts"
-		},
-		
-		"StarterCharacterScripts":
-		{
-			"$path": "Player"
-		},
-		
-		"StarterPlayerScripts":
-		{
-			"$path": "Client"
 		}
 	}
 }

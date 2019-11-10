@@ -90,7 +90,7 @@ local function rotateCameraTowardsGoal()
 			local rotation = math.min(0.01, abs)
 			
 			local cfLocal = focus:toObjectSpace(cf)
-			camera.CFrame = focus * CFrame.Angles(0, -rotation * ign, 0) * cfLocal
+			camera.CFrame = focus * CFrame.Angles(0, -rotation * sign, 0) * cfLocal
 		end
 	end
 end
@@ -127,13 +127,15 @@ mouse.TargetFilter = workspace.CurrentCamera
 local lastTarget
 local lastTargetCanClick = false
 
+local adorn = Instance.new("Part", script)
+
 local disk = Instance.new("CylinderHandleAdornment")
 disk.Name = "Disk"
 disk.Color3 = Color3.new(0,1,0)
 disk.Radius = 1
 disk.Height = 0.2
 disk.Visible = false
-disk.Adornee = workspace.Terrain
+disk.Adornee = adorn
 disk.Parent = script
 
 local goalDisk = disk:Clone()
@@ -220,7 +222,7 @@ local function render3dAdorn()
 	disk.Visible = canRenderDisk(true)
 	
 	if disk.Visible then
-		disk.CFrame = CFrame.new(mouse.Hit.p) * DISK_OFFSET
+		disk.CFrame = CFrame.new(mouse.Hit.Position) * DISK_OFFSET
 		mouseIcon.Image = ICON_HOVER
 	elseif canClickTarget() then
 		mouseIcon.Image = ICON_CLICK
@@ -243,8 +245,9 @@ RunService.Heartbeat:Connect(render3dAdorn)
 -- Click Action
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local function onInputBegan(input,gameProcessed)
-	local goal = mouse.Hit.p
+local function onInputBegan(input, gameProcessed)
+	local goal = mouse.Hit.Position
+	
 	if not gameProcessed and canRenderDisk() and humanoid then	
 		local name = input.UserInputType.Name
 		

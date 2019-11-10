@@ -76,7 +76,7 @@
 				<bool name="ClipsDescendants">false</bool>
 				<bool name="Draggable">false</bool>
 				<int name="LayoutOrder">0</int>
-				<string name="Name">Frame</string>
+				<string name="Name">Star</string>
 				<Ref name="NextSelectionDown">null</Ref>
 				<Ref name="NextSelectionLeft">null</Ref>
 				<Ref name="NextSelectionRight">null</Ref>

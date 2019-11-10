@@ -13,36 +13,38 @@ local isActive = false
 -- Standard Input
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local function activate(active,cf)
+local function activate(active, cf)
 	isActive = active
-	remote:FireServer("SetActive",active,cf)
+	remote:FireServer("SetActive", active, cf)
+
 	while isActive do
 		wait(.1)
-		remote:FireServer("SetTarget",mouse.Hit)
+		remote:FireServer("SetTarget", mouse.Hit)
 	end
 end
 
 local function onKey(input)
 	local keyCode = input.KeyCode.Name
 	local down = (input.UserInputState.Name == "Begin")
-	remote:FireServer("KeyEvent",keyCode,down)
+	remote:FireServer("KeyEvent", keyCode, down)
 end
 
 local function onInputBegan(input,gameProcessed)
 	if not gameProcessed then
 		local name = input.UserInputType.Name
+
 		if name == "MouseButton1" then
-			activate(true,mouse.Hit)
+			activate(true, mouse.Hit)
 		elseif name == "Touch" then
 			wait(.1)
 			local state = input.UserInputState.Name
 			if state == "End" or state == "Cancel" then
-				activate(true,mouse.Hit)
+				activate(true, mouse.Hit)
 			end
 		elseif name == "Gamepad1" then
 			local keyCode = input.KeyCode.Name
 			if keyCode == "ButtonR2" then
-				activate(true,mouse.Hit)
+				activate(true, mouse.Hit)
 			end
 		elseif name == "Keyboard" then
 			onKey(input)
@@ -88,25 +90,25 @@ if mControlScheme then
 	
 	for key,data in pairs(controlScheme) do
 		local down = false
-		callbacks[key] = function (actionName,inputState,inputObject)
+		callbacks[key] = function (actionName, inputState, inputObject)
 			if (inputState.Name == "Begin") and not down then
 				down = true
 				if data.Client then
-					keyEvent:Fire(key,true)
+					keyEvent:Fire(key, true)
 				else
-					remote:FireServer("KeyEvent",key,true)
+					remote:FireServer("KeyEvent", key, true)
 				end
 			elseif (inputState.Name == "End") and down then
 				down = false
 				if data.Client then
 					keyEvent:Fire(key,false)
 				else
-					remote:FireServer("KeyEvent",key,false)
+					remote:FireServer("KeyEvent", key, false)
 				end
 			end
 		end
 		
-		local xBtn = data.XboxButton:gsub("Button","")
+		local xBtn = data.XboxButton:gsub("Button", "")
 		if #xBtn == 2 then
 			local handId,hTypeId = xBtn:match("(%u)(%d)")
 			local hand = hands[handId]
@@ -115,8 +117,9 @@ if mControlScheme then
 		else
 			xBtn = "(" .. xBtn .. ")"
 		end
-		table.insert(schemeDocs.Keyboard,key .. " - " .. data.Label)
-		table.insert(schemeDocs.Gamepad,xBtn .. " - " .. data.Label)
+
+		table.insert(schemeDocs.Keyboard, key .. " - " .. data.Label)
+		table.insert(schemeDocs.Gamepad, xBtn .. " - " .. data.Label)
 	end
 
 	local currentSchemeDocMsg
@@ -150,10 +153,12 @@ if mControlScheme then
 	local function onEquipped()
 		if not equipped then
 			equipped = true
+
 			for key,data in pairs(controlScheme) do
 				ContextActionService:BindAction(data.Label,callbacks[key],true,Enum.KeyCode[data.XboxButton])
 				ContextActionService:SetTitle(data.Label,data.Label)
 			end
+
 			if UserInputService.TouchEnabled then
 				spawn(function ()
 					local playerGui = player:WaitForChild("PlayerGui")
@@ -164,9 +169,12 @@ if mControlScheme then
 					contextButtonFrame.Position = UDim2.new(1,0,1,0)
 				end)
 			end
+
 			currentSchemeDocMsg = Instance.new("Message")
 			currentSchemeDocMsg.Parent = player
+
 			onLastInputTypeChanged(UserInputService:GetLastInputType())
+
 			if not diedCon then
 				local char = tool.Parent
 				if char then
@@ -181,5 +189,6 @@ if mControlScheme then
 	
 	tool.Equipped:Connect(onEquipped)
 	tool.Unequipped:Connect(onUnequipped)
+	
 	UserInputService.LastInputTypeChanged:Connect(onLastInputTypeChanged)
 end

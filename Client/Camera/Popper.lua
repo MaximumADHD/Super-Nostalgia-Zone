@@ -10,7 +10,8 @@ local PopperCam = {} -- Guarantees your players won't see outside the bounds of 
 local POP_RESTORE_RATE = 0.3
 local MIN_CAMERA_ZOOM = 0.5
 
-local VALID_SUBJECTS = {
+local VALID_SUBJECTS = 
+{
 	'Humanoid',
 	'VehicleSeat',
 	'SkateboardPlatform',

@@ -29,31 +29,35 @@ local creators =
 	["ROBLOX Halloween Paintball 2009"]     = "Stealth Pilot";
 }
 
+local placeData = {}
+
 local function iterPageItems(pages)
 	return coroutine.wrap(function ()
 		local pageNum = 1
+
 		while true do
 			for _, item in ipairs(pages:GetCurrentPage()) do
 				coroutine.yield(item, pageNum)
 			end
+
 			if pages.IsFinished then
 				break
 			end
+
 			pages:AdvanceToNextPageAsync()
 			pageNum = pageNum + 1
 		end
 	end)
 end
 
-local placeData = {}
-
 for place in iterPageItems(places) do
 	if place.PlaceId ~= game.PlaceId then 
 		if place.Name:lower():find("devtest") then
 			place.DevTest = true
 		end
+
 		place.Creator = creators[place.Name] or "ROBLOX"
-		table.insert(placeData,place)
+		table.insert(placeData, place)
 	end
 end
 

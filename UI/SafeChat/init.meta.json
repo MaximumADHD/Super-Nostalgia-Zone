@@ -1,14 +1,11 @@
 {
-    "className": "ImageButton",
+    "className": "Frame",
 
     "properties":
     {
+        "Size": [1, 0, 1, 0],
         "AnchorPoint": [0, 1],
-        "BackgroundTransparency": 1,
-
-        "Position": [0, 22, 0.75, 0],
-        "Size": [0, 32, 0, 30],
-
-        "Image": "rbxassetid://991182833"
+        "Position": [0, 0, 1, 0],
+        "BackgroundTransparency": 1
     }
 }

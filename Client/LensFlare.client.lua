@@ -2,9 +2,9 @@ local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
 local TeleportService = game:GetService("TeleportService")
 
-local c = workspace.CurrentCamera
+local camera = workspace.CurrentCamera
+local lensFlareNode = camera:FindFirstChild("LensFlareNode")
 
-local lensFlareNode = c:FindFirstChild("LensFlareNode")
 if not lensFlareNode then
 	lensFlareNode = Instance.new("Part")
 	lensFlareNode.Name = "LensFlareNode"
@@ -12,7 +12,7 @@ if not lensFlareNode then
 	lensFlareNode.Anchored = true
 	lensFlareNode.CanCollide = false
 	lensFlareNode.Locked = true
-	lensFlareNode.Parent = c
+	lensFlareNode.Parent = camera
 end
 
 local lenses = 
@@ -37,12 +37,11 @@ local function projectRay(ray,length)
 	return Ray.new(origin,direction.Unit * length)
 end
 
-local function computeSunOcclusion()
-	local sunPos = Lighting:GetSunDirection()
-	local cf = c.CFrame
+local function computeSunOcclusion(sunPos)
+	local cf = camera.CFrame
 	
-	if sunPos:Dot(cf.lookVector) > 0 then
-		local sunView = c:WorldToViewportPoint(cf.p + sunPos)
+	if sunPos:Dot(cf.LookVector) > 0 then
+		local sunView = camera:WorldToViewportPoint(cf.Position + sunPos)
 		local visibility = 0
 		local total = 0
 		
@@ -51,42 +50,48 @@ local function computeSunOcclusion()
 				local posX = math.floor(sunView.X + dx * 15)
 				local posY = math.floor(sunView.Y + dy * 15)
 				
-				local sunRay = c:ViewportPointToRay(posX, posY)
-				sunRay = projectRay(sunRay,5000)
+				local sunRay = camera:ViewportPointToRay(posX, posY)
+				sunRay = projectRay(sunRay, 5000)
 
-				local hit,pos = workspace:FindPartOnRay(sunRay,c)
+				local hit, pos = workspace:FindPartOnRay(sunRay, camera)
+
 				if not hit then
 					visibility = visibility + 1
 				end
+				
 				total = total + 1
 			end
 		end
 		
 		visibility = visibility / total
-		return (1-visibility),sunView
+		return (1 - visibility), sunView
 	end
 	
 	return 0
 end
 
-local function asVector2(v3,...)
-	return Vector2.new(v3.X,v3.Y),...
+local function asVector2(v3, ...)
+	return Vector2.new(v3.X, v3.Y), ...
 end
 
 local function update()
 	if TeleportService:GetTeleportSetting("ClassicSky") then
-		local vpSize = c.ViewportSize
+		local vpSize = camera.ViewportSize
 		local sunDir = Lighting:GetSunDirection()
+
 		local sunWP = sunDir * 10e6
-		local sunSP,inView = asVector2(c:WorldToViewportPoint(sunWP))
-		local occlusion = inView and computeSunOcclusion() or 1
-		if occlusion < 1 then
+		local sunSP, inView = asVector2(camera:WorldToViewportPoint(sunWP))
+
+		local occlusion = inView and computeSunOcclusion(sunDir) or 1
+		
+		if occlusion < 1 and sunDir.Y > -0.1 then
 			local invSunSP = vpSize - sunSP
 			local enabled = (inView and occlusion < 1)
-			local flareBrightness = math.sqrt(math.max(0,sunDir.y*4))
+			local flareBrightness = math.sqrt(math.max(0, sunDir.Y * 4))
 			
-			for i,lense in ipairs(lenses) do
+			for i, lense in ipairs(lenses) do
 				local radius = lense.Radius / 12
+
 				if not lense.Beam then	
 					local a0 = Instance.new("Attachment")
 					lense.A0 = a0
@@ -114,14 +119,15 @@ local function update()
 					beam.Parent = lensFlareNode
 				end
 				
-				local lenseSP = invSunSP:lerp(sunSP,lense.Distance)
-				local lenseWP = c:ViewportPointToRay(lenseSP.X,lenseSP.Y,1).Origin
-				local lenseCF = CFrame.new(lenseWP,lenseWP - sunDir)
-				lense.A0.CFrame = lenseCF * CFrame.new(-radius/2,0,0)
-				lense.A1.CFrame = lenseCF * CFrame.new(radius/2,0,0)
+				local lenseSP = invSunSP:Lerp(sunSP, lense.Distance)
+				local lenseWP = camera:ViewportPointToRay(lenseSP.X, lenseSP.Y, 1).Origin
+				local lenseCF = CFrame.new(lenseWP, lenseWP - sunDir)
+
+				lense.A0.CFrame = lenseCF * CFrame.new(-radius / 2, 0, 0)
+				lense.A1.CFrame = lenseCF * CFrame.new( radius / 2, 0, 0)
 			end
 			
-			lensFlareNode.Parent = c
+			lensFlareNode.Parent = camera
 			return
 		end
 	end
@@ -129,6 +135,4 @@ local function update()
 	lensFlareNode.Parent = nil
 end
 
-return function (script)
-	RunService:BindToRenderStep("LensFlareUpdate",201,update)
-end
+RunService:BindToRenderStep("LensFlareUpdate", 201, update)

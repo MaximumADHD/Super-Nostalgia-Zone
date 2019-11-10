@@ -31,7 +31,7 @@
 			"$className": "ServerStorage",
 			"$path": "Server/Resources",
 			
-			"Tools":
+			"StandardTools":
 			{
 				"$path": "Tools"
 			}
@@ -41,7 +41,7 @@
 		{
 			"$className": "StarterGui",
 			
-			"UI [PREVIEW, DO NOT EDIT]":
+			"UI [PREVIEW]":
 			{
 				"$path": "UI",
 				

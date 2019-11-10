@@ -2,7 +2,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local StarterPack = game:GetService("StarterPack")
 local Players = game:GetService("Players")
 
-local tools = ServerStorage:WaitForChild("Tools")
+local tools = ServerStorage:WaitForChild("StandardTools")
 local loadTools = ServerStorage:FindFirstChild("LoadTools")
 
 if loadTools then

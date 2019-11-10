@@ -5,20 +5,14 @@
     [
         {
             "type": "shell",
-            "label": "Package Game (Core)",
-            "command": "rojo build --output SNZ_CORE.rbxmx core.project.json",
-
-            "group": 
+            "label": "Upload Game",
+            "command": "powershell -ExecutionPolicy ByPass -File UploadGame.ps1",
+            
+            "group":
             {
                 "kind": "build",
                 "isDefault": true
             }
-        },
-        
-        {
-            "type": "shell",
-            "label": "Package Game (Shared)",
-            "command": "rojo build --output SNZ_SHARED.rbxmx shared.project.json",
         }
     ]
 }

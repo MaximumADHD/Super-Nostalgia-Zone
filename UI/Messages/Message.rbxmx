@@ -9,9 +9,9 @@
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<bool name="AutoLocalize">true</bool>
 			<Color3 name="BackgroundColor3">
-				<R>0.4980392</R>
-				<G>0.4980392</G>
-				<B>0.4980392</B>
+				<R>0.6</R>
+				<G>0.6</G>
+				<B>0.6</B>
 			</Color3>
 			<float name="BackgroundTransparency">0.5</float>
 			<Color3 name="BorderColor3">

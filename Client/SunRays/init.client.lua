@@ -52,6 +52,7 @@ end
 local function update()
 	if TeleportService:GetTeleportSetting("ClassicSky") then
 		local sunPos = Lighting:GetSunDirection()
+		
 		if sunPos.Y >= -.1 then
 			local visibility, sunView = computeSunVisibility()
 

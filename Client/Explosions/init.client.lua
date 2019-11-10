@@ -23,14 +23,14 @@ local function onDescendantAdded(exp)
 			local expObj = Instance.new("SphereHandleAdornment")
 			expObj.Adornee = expAdorn
 			expObj.Radius = exp.BlastRadius
-			expObj.Color3 = Color3.new(1,0,0)
+			expObj.Color3 = Color3.new(1, 0, 0)
 			expObj.CFrame = cf
 			expObj.Parent = expAdorn
 
 			lifeTime = 1
 
 			if exp.BlastRadius > 1 then
-				lifeTime = lifeTime - (1/exp.BlastRadius)
+				lifeTime = lifeTime - (1 / exp.BlastRadius)
 			end
 		else
 			local e = classicExp:Clone()

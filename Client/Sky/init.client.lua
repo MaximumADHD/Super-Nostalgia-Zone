@@ -11,11 +11,11 @@ local UserInputService = game:GetService("UserInputService")
 
 local midnight = 0
 local day = 86400
-local hour = day/24
+local hour = day / 24
 
 local sunRise = day * .25
 local sunSet = day * .75
-local riseAndSetTime = hour/2
+local riseAndSetTime = hour / 2
 
 local times =
 {
@@ -63,7 +63,7 @@ end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local function r()
-	return -1 + (math.random()*2)
+	return -1 + (math.random() * 2)
 end
 
 local lastTime = 0
@@ -75,11 +75,32 @@ local nightFrame = night:WaitForChild("NightFrame")
 local star = script:WaitForChild("Star")
 
 local shadowsOn = true
+local black = Color3.new()
 
-for i = 1, 500 do
+local toneMap do
+	toneMap = Instance.new("ColorCorrectionEffect")
+	toneMap.TintColor = Color3.new(1.25, 1.25, 1.25)
+	toneMap.Name = "LegacyToneMap"
+	toneMap.Brightness = 0.03
+	toneMap.Saturation = 0.07
+	toneMap.Contrast = -0.15
+	toneMap.Parent = Lighting
+	
+	if Lighting.Ambient ~= black then
+		Lighting.OutdoorAmbient = Lighting.Ambient
+		Lighting.Ambient = black:Lerp(Lighting.Ambient, 0.5)
+	end
+	
+	Lighting.GlobalShadows = true
+	Lighting.ShadowSoftness = 0.1
+end
+
+for i = 1, 3000 do
 	local bb = star:Clone()
+	local size = math.random(2, 6) / 2
 	bb.StudsOffsetWorldSpace = Vector3.new(r(), r(), r()).Unit * 2500
-	bb.Size = UDim2.new(0, math.random(2, 5), 0, math.random(2, 5))
+	bb.Star.Transparency = (math.random(1, 4) - 1) / 4
+	-- bb.Size = UDim2.new(0, size, 0, size)
 	bb.Adornee = skyAdorn
 	bb.Parent = skyAdorn
 end
@@ -104,8 +125,15 @@ local function updateSky()
 			Lighting.Ambient = Lighting.OutdoorAmbient
 		end
 	end
+
+	local sunDir = Lighting:GetSunDirection()
+	local globalLight = math.clamp((sunDir.Y + .033) * 10, 0, 1)
+	
+	toneMap.Contrast = -0.15 * globalLight
+	toneMap.Saturation = 0.07 * globalLight
 	
 	if TeleportService:GetTeleportSetting("ClassicSky") then
+		local camera = workspace.CurrentCamera
 		local seconds = Lighting:GetMinutesAfterMidnight() * 60
 		
 		if seconds < 0 then
@@ -115,14 +143,14 @@ local function updateSky()
 		if seconds ~= lastTime then
 			local sunDir = game.Lighting:GetSunDirection() 
 			local skyColor = linearSpline(seconds, times, colors)
+			nightFrame.BackgroundTransparency = globalLight
 			nightFrame.BackgroundColor3 = skyColor
-			nightFrame.BackgroundTransparency = math.clamp((sunDir.Y + .033) * 10, 0, 1)
 			lastTime = seconds
 		end
 		
-		local sunDir = Lighting:GetSunDirection()
-		skyAdorn.CFrame = CFrame.new(c.CFrame.p) * CFrame.new(Vector3.new(), sunDir)
-		skyAdorn.Parent = (nightFrame.BackgroundTransparency < 1 and c or nil)
+		
+		skyAdorn.CFrame = CFrame.new(camera.CFrame.Position) * CFrame.new(Vector3.new(), sunDir)
+		skyAdorn.Parent = (nightFrame.BackgroundTransparency < 1 and camera or nil)
 	else
 		skyAdorn.Parent = nil
 	end

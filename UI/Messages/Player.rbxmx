@@ -9,9 +9,9 @@
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<bool name="AutoLocalize">true</bool>
 			<Color3 name="BackgroundColor3">
-				<R>0.5882353</R>
-				<G>0.5882353</G>
-				<B>0.5882353</B>
+				<R>0.6</R>
+				<G>0.6</G>
+				<B>0.6</B>
 			</Color3>
 			<float name="BackgroundTransparency">0.5</float>
 			<Color3 name="BorderColor3">
@@ -33,9 +33,9 @@
 			<Ref name="NextSelectionUp">null</Ref>
 			<UDim2 name="Position">
 				<XS>0</XS>
-				<XO>32</XO>
+				<XO>30</XO>
 				<YS>0</YS>
-				<YO>5</YO>
+				<YO>40</YO>
 			</UDim2>
 			<Ref name="RootLocalizationTable">null</Ref>
 			<float name="Rotation">0</float>

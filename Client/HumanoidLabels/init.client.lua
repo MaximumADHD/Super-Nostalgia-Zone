@@ -1,14 +1,16 @@
-local humanoids = {}
+local humanoids = setmetatable({}, { __mode = 'k' })
+
 local player = game.Players.LocalPlayer
 local pgui = player:WaitForChild("PlayerGui")
+
 local healthBase = script:WaitForChild("Health")
 local rs = game:GetService("RunService")
 
 local farStudsOffset = Vector3.new(0,2,0)
 local closeStudsOffset = Vector3.new(0,1,0)
 
-local farSize = UDim2.new(0,50,0,20)
-local closeSize = UDim2.new(0,100,0,30)
+local farSize = UDim2.new(0, 50, 0, 20)
+local closeSize = UDim2.new(0, 100, 0, 30)
 
 local function isFinite(num)
 	return num == num and num ~= -1/0 and num ~= 1/0
@@ -100,17 +102,11 @@ local function setupHumanoid(h)
 	h.AncestryChanged:Connect(onAncestryChanged)
 end
 
-local function recurse(obj)
-	for _,v in pairs(obj:GetChildren()) do
-		if v:IsA("Humanoid") then
-			humanoids[v] = true
-		else
-			recurse(v)
-		end
+for _,desc in pairs(workspace:GetDescendants()) do
+	if desc:IsA("Humanoid") then
+		humanoids[desc] = true
 	end
 end
-
-recurse(workspace)
 
 for h in pairs(humanoids) do
 	humanoids[h] = true
@@ -127,13 +123,8 @@ local function onDescendantAdded(child)
 	end
 end
 
-local function onDescendantRemoved(child)
-	if humanoids[child] then
-		humanoids[child] = nil
-	end
+for _,desc in pairs(workspace:GetDescendants()) do
+	onDescendantAdded(desc)
 end
 
-recurse(workspace)
-
-workspace.DescendantAdded:connect(onDescendantAdded)
-workspace.DescendantRemoving:connect(onDescendantRemoved)
+workspace.DescendantAdded:Connect(onDescendantAdded)

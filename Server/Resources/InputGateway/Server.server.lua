@@ -20,9 +20,9 @@ local function onGatewayReceive(sendingPlayer, request, ...)
 			
 			if request == "SetActive" then
 				local down, target = ...
-				assert(typeof(target) == "CFrame","Expected CFrame")
+				assert(typeof(target) == "CFrame", "Expected CFrame")
 				
-				humanoid.TargetPoint = target.p
+				humanoid.TargetPoint = target.Position
 				
 				if humanoid.Health > 0 and tool:IsDescendantOf(char) then
 					if down then
@@ -33,12 +33,14 @@ local function onGatewayReceive(sendingPlayer, request, ...)
 				end
 			elseif request == "SetTarget" then
 				local target = ...
-				assert(typeof(target) == "CFrame","Expected CFrame")
-				humanoid.TargetPoint = target.p
+				assert(typeof(target) == "CFrame", "Expected CFrame")
+				humanoid.TargetPoint = target.Position
 			elseif request == "KeyEvent" then
 				local key, down = ...
-				assert(typeof(key) == "string","bad key cast")
-				assert(typeof(down) == "boolean","bad down state cast")
+
+				assert(typeof(key) == "string", "Expected string")
+				assert(typeof(down) == "boolean", "Expected boolean")
+				
 				keyEvent:Fire(key, down)
 			end
 		end
