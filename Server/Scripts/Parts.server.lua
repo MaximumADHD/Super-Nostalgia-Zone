@@ -205,7 +205,7 @@ local function applyCharacter(humanoid)
 	local model = humanoid.Parent
 	
 	if not CollectionService:HasTag(humanoid, "Classified") then
-		local characterAssets = ServerStorage.CharacterAssets 
+		local characterAssets = ServerStorage:WaitForChild("CharacterAssets")
 		CollectionService:AddTag(humanoid, "Classified")
 		
 		for _,v in pairs(model:GetDescendants()) do

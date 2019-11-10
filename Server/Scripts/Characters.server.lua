@@ -25,6 +25,8 @@ local requestCharacter = Instance.new("RemoteEvent")
 requestCharacter.Name = "RequestCharacter"
 requestCharacter.Parent = ReplicatedStorage
 
+local assets = ServerStorage:WaitForChild("CharacterAssets")
+
 local hats = Instance.new("Folder")
 hats.Name = "ServerHatCache"
 hats.Parent = ServerStorage
@@ -54,7 +56,6 @@ local function safeDestroy(obj)
 end
 
 local function onCharacterAdded(char)
-	local assets = ServerStorage.CharacterAssets
 	local player = Players:GetPlayerFromCharacter(char)
 	
 	local bodyColors = assets.BodyColors:Clone()
