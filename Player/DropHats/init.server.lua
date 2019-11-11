@@ -6,9 +6,7 @@ local torso = char:WaitForChild("HumanoidRootPart")
 local humanoid = char:WaitForChild("Humanoid")
 local hatPickup = script:WaitForChild("HatPickup")
 
-local dropHat = Instance.new("RemoteEvent")
-dropHat.Name = "DropHat"
-dropHat.Parent = script
+local dropHat = script:WaitForChild("DropHat")
 
 local function onDropHat(player)
 	local myPlayer = Players:GetPlayerFromCharacter(char)
