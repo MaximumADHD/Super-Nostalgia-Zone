@@ -63,8 +63,8 @@ local function activateRootTree()
 	chatButton.Image = IMG_CHAT_DN
 	
 	if UserInputService:GetLastInputType() == Enum.UserInputType.Gamepad1 then
-		GuiService:AddSelectionParent("SafeChatNav", safeChat)
-		GuiService.SelectedObject = safeChat
+		GuiService:AddSelectionParent("SafeChatNav", chatButton)
+		GuiService.SelectedObject = chatButton
 	end
 end
 
@@ -124,7 +124,7 @@ local function assembleTree(tree)
 end
 
 rootTree = assembleTree(safeChatTree)
-rootTree.Parent = safeChat
+rootTree.Parent = chatButton
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Button State
