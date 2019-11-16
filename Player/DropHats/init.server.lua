@@ -24,19 +24,18 @@ local function onDropHat(player)
 				joint:Destroy()
 			end
 			
+			for _,child in pairs(newHandle:GetChildren()) do
+				if child:IsA("JointInstance") then
+					child:Destroy()
+				end
+			end
+			
 			newHandle.CFrame = dropPos
-			newHandle.Anchored = true
-			newHandle.CanCollide = false
+			newHandle.CanCollide = true
 			newHandle.Parent = workspace
 			
 			handle:Destroy()
 			hat.Parent = newHandle
-			
-			wait(.1)
-			
-			newHandle.Anchored = false
-			newHandle.CanCollide = true
-			newHandle:SetNetworkOwner(nil)
 			
 			local pickup = hatPickup:Clone()
 			pickup.Parent = newHandle
