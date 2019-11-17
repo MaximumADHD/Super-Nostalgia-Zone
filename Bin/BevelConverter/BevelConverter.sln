@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BevelConverter", "BevelConverter\BevelConverter.csproj", "{957A7717-A3CB-41B0-A17C-0E638017E915}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BevelConverter", "BevelConverter.csproj", "{957A7717-A3CB-41B0-A17C-0E638017E915}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
