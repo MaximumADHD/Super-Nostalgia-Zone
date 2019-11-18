@@ -23,7 +23,6 @@
 		"ReplicatedStorage":
 		{
 			"$ignoreUnknownInstances": true,
-
 			"$className": "ReplicatedStorage",
 			"$path": "Shared"
 		},
@@ -31,7 +30,6 @@
 		"ServerStorage":
 		{
 			"$ignoreUnknownInstances": true,
-
 			"$className": "ServerStorage",
 			"$path": "Server/Resources",
 			

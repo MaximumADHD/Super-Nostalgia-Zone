@@ -3,8 +3,9 @@ local Players = game:GetService("Players")
 
 local jobId = game.JobId
 local placeId = game.PlaceId
+local privateServerId = game.PrivateServerId
 
-if jobId == "" then
+if jobId == "" or privateServerId ~= "" then
 	return
 end
 

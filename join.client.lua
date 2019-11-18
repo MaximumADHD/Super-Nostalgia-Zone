@@ -1,6 +1,7 @@
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
+local ContentProvider = game:GetService("ContentProvider")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local TeleportService = game:GetService("TeleportService")
 local JointsService = game:GetService("JointsService")
@@ -26,18 +27,13 @@ if not UserInputService.TouchEnabled then
 	mouse.Icon = "rbxassetid://334630296"
 end
 
-local ui = script:FindFirstChild("UI")
-
-if ui then
-	ui.Parent = playerGui
-else
-	ui = playerGui:WaitForChild("UI")
-end
-
-ReplicatedFirst:RemoveDefaultLoadingScreen()
+local ui = script:WaitForChild("UI")
+ui.Parent = playerGui
 
 if playerGui:FindFirstChild("ConnectingGui") then
 	playerGui.ConnectingGui:Destroy()
+else
+	ReplicatedFirst:RemoveDefaultLoadingScreen()
 end
 
 local gameJoin = ui:WaitForChild("GameJoin")
@@ -50,28 +46,165 @@ local partQueue = {}
 
 local bricks = 0
 local connectors = 0
-local messageFormat = "Bricks: %d  Connectors: %d"
+local statusFormat = "Bricks: %d  Connectors: %d"
 
 ---------------------------------------------------------------------
 
 local camera = workspace.CurrentCamera
 camera.CameraType = "Follow"
-camera.CameraSubject = workspace
+camera.CameraSubject = nil
 
 gameJoin.Visible = true
 
 local bricks = 0
 local connectors = 0
-local lastUpdate = 0
 
-while not game:IsLoaded() do
-	game.Loaded:Wait()
+local queueMax = 20
+local loadTimeout = 0
+
+local extentsUpdate = 0
+local focus, size
+
+local function onDescendantAdded(desc)
+	if desc:IsA("BasePart") and desc.Transparency < 1 then
+		if not (desc:IsA("Terrain") or desc.Parent == camera) then
+			bricks = bricks + 1
+		end
+	elseif desc:IsA("JointInstance") then
+		connectors = connectors + 1
+	end
+end
+
+local function computeVisibleExtents(model)
+	local abs, inf = math.abs, math.huge
+	local min, max = math.min, math.max
+	
+	local min_X, min_Y, min_Z = inf, inf, inf
+	local max_X, max_Y, max_Z = -inf, -inf, -inf
+	
+	for _,child in pairs(model:GetChildren()) do
+		if child:IsA("Model") then
+			local cf, size = child:GetBoundingBox()
+
+			local x, y, z = cf.X, cf.Y, cf.Z
+			local sx, sy, sz = size.X / 2, size.Y / 2, size.Z / 2
+			
+			min_X = min(min_X, x - sx)
+			min_Y = min(min_Y, y - sy)
+			min_Z = min(min_Z, z - sz)
+			
+			max_X = max(max_X, x + sx)
+			max_Y = max(max_Y, y + sy)
+			max_Z = max(max_Z, z + sz)
+		elseif child:IsA("BasePart") then
+			if child.Transparency < 1 and not child:IsA("Terrain") then
+				local cf = child.CFrame
+				local size = child.Size
+				
+				local sx, sy, sz = size.X, size.Y, size.Z
+				local x, y, z, R00, R01, R02, R10, R11, R12, R20, R21, R22 = cf:GetComponents()
+				
+				-- https://zeuxcg.org/2010/10/17/aabb-from-obb-with-component-wise-abs/
+				local ws_X = (abs(R00) * sx + abs(R01) * sy + abs(R02) * sz) / 2
+				local ws_Y = (abs(R10) * sx + abs(R11) * sy + abs(R12) * sz) / 2
+				local ws_Z = (abs(R20) * sx + abs(R21) * sy + abs(R22) * sz) / 2
+				
+				min_X = min(min_X, x - ws_X)
+				min_Y = min(min_Y, y - ws_Y)
+				min_Z = min(min_Z, z - ws_Z)
+				
+				max_X = max(max_X, x + ws_X)
+				max_Y = max(max_Y, y + ws_Y)
+				max_Z = max(max_Z, z + ws_Z)
+			end
+		end
+	end
+
+	if min_X == inf then
+		min_X, min_Y, min_Z = 0, 0, 0
+		max_X, max_Y, max_Z = 0, 0, 0
+	end
+	
+	local minVec = Vector3.new(min_X, min_Y, min_Z)
+	local maxVec = Vector3.new(max_X, max_Y, max_Z)
+
+	local cf = 
+		CFrame.new((min_X + max_X) / 2, 
+		           (min_Y + max_Y) / 2, 
+			       (min_Z + max_Z) / 2)
+
+	local size = 
+		Vector3.new(max_X - min_X,
+					max_Y - min_Y,
+				    max_Z - min_Z)
+	
+	return cf, size
+end
+
+local loading do
+	for _,desc in pairs(workspace:GetDescendants()) do
+		onDescendantAdded(desc)
+	end
+
+	loading = workspace.DescendantAdded:Connect(onDescendantAdded)
+end
+
+local function loadingUpdate()
+	if not loading then
+		return
+	end
+
+	-- Update the extents
+	local now = tick()
+
+	if (now - extentsUpdate > 0.5) then
+		focus, size = computeVisibleExtents(workspace)
+		extentsUpdate = now
+	end
+
+	-- Update the camera zoom and location.
+	local focalPos = focus.Position
+	local extents = size.Magnitude * 2
+	
+	local lookVector = camera.CFrame.LookVector
+	local zoom = CFrame.new(focalPos - (lookVector * extents), focalPos)
+	
+	camera.CFrame = camera.CFrame:Lerp(zoom, 0.2)
+	camera.Focus = camera.Focus:Lerp(focus, 0.2)
+
+	-- Update the maximum queue size.
+	local queueSize = ContentProvider.RequestQueueSize
+	queueMax = math.max(queueMax, queueSize)
+
+	-- Update the display.
+	local ratio = (queueMax - queueSize) / queueMax
+	local r_bricks = math.floor(bricks * ratio)
+	local r_connectors = math.floor(connectors * ratio)
+	message.Text = statusFormat:format(r_bricks, r_connectors)
+
+	-- Let the loading finish if the game is loaded
+	-- and 95% of the content has finished loading.
+	if game:IsLoaded() and ratio > 0.95 then
+		loadTimeout = loadTimeout + 1
+		
+		if loadTimeout > 60 then
+			RunService:UnbindFromRenderStep("LoadingUpdate")
+			loading:Disconnect()
+			loading = nil
+		end
+	end
+end
+
+RunService:BindToRenderStep("LoadingUpdate", 1000, loadingUpdate)
+
+while loading do
+	RunService.Heartbeat:Wait()
 end
 
 if not player.Character then
-	camera.CameraSubject = nil
 	message.Text = "Requesting character..."
-
+	wait(0.5)
+	
 	local requestCharacter = ReplicatedStorage:WaitForChild("RequestCharacter")
 	requestCharacter:FireServer()
 

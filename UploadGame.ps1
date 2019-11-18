@@ -14,5 +14,5 @@ if ($confirmation -eq 'y')
     echo "Uploading shared..."
     rojo upload --asset_id 1027421176 --cookie $cookie shared.project.json
     
-    echo Finished!
+    echo "Finished!"
 }

@@ -72,6 +72,11 @@ function PopperCam:Update()
 	if PopperEnabled then
 		-- First, prep some intermediate vars
 		local Camera = workspace.CurrentCamera
+
+		if Camera.CameraType.Name == "Fixed" then
+			return
+		end
+		
 		local cameraCFrame = Camera.CFrame
 		local focusPoint = Camera.Focus.p
 
