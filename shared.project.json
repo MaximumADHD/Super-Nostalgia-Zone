@@ -22,13 +22,13 @@
                 {
                     "$className": "Folder",
                     
-                    "Sky":     {"$path": "Client/Sky"},
-                    "Moon":    {"$path": "Client/Moon"},
-                    "SunRays": {"$path": "Client/SunRays"},
+                    "Sky":     { "$path": "Client/Sky"     },
+                    "Moon":    { "$path": "Client/Moon"    },
+                    "SunRays": { "$path": "Client/SunRays" },
                     
-                    "Mouse":     {"$path": "UI/Mouse/Mouse.client.lua"  },
-                    "FpsCap":    {"$path": "Client/FpsCap.client.lua"   },
-                    "LensFlare": {"$path": "Client/LensFlare.client.lua"}
+                    "Mouse":     { "$path": "UI/Mouse/Mouse.client.lua"   },
+                    "FpsCap":    { "$path": "Client/FpsCap.client.lua"    },
+                    "LensFlare": { "$path": "Client/LensFlare.client.lua" }
                 }
             },
             
