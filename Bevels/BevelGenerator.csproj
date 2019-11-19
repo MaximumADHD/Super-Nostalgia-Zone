@@ -7,8 +7,8 @@
     <ProjectGuid>{957A7717-A3CB-41B0-A17C-0E638017E915}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Bevels</RootNamespace>
-    <AssemblyName>Bevels</AssemblyName>
+    <RootNamespace>BevelGenerator</RootNamespace>
+    <AssemblyName>BevelGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
