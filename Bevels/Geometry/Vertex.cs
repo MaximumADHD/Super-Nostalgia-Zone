@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using RobloxFiles.DataTypes;
 
-namespace BevelConverter
+namespace BevelGenerator
 {
     public class Vertex
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{957A7717-A3CB-41B0-A17C-0E638017E915}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BevelConverter</RootNamespace>
-    <AssemblyName>BevelConverter</AssemblyName>
+    <RootNamespace>Bevels</RootNamespace>
+    <AssemblyName>Bevels</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LZ4">
-      <HintPath>Packages\LZ4.dll</HintPath>
-    </Reference>
     <Reference Include="RobloxFileFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Packages\RobloxFileFormat.dll</HintPath>

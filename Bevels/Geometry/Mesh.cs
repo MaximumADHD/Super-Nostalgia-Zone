@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 using RobloxFiles.DataTypes;
 
-namespace BevelConverter
+namespace BevelGenerator
 {
     public class Mesh
     {
@@ -32,13 +32,15 @@ namespace BevelConverter
             return new Vector3(x, y, z);
         }
 
-        private static void CheckDefaultLODs(Mesh mesh)
+        private static Mesh CheckLOD(Mesh mesh)
         {
             if (mesh.NumLODs == 0)
             {
                 mesh.NumLODs = 2;
                 mesh.LODs = new List<int> { 0, mesh.NumFaces };
             }
+
+            return mesh;
         }
 
         private static void LoadGeometry_Ascii(StringReader reader, Mesh mesh)
@@ -99,7 +101,7 @@ namespace BevelConverter
                 }
             }
 
-            CheckDefaultLODs(mesh);
+            CheckLOD(mesh);
         }
 
         private static void LoadGeometry_Binary(BinaryReader reader, Mesh mesh)
@@ -125,7 +127,7 @@ namespace BevelConverter
             
             for (int i = 0; i < mesh.NumVerts; i++)
             {
-                Vertex vert = new Vertex()
+                var vert = new Vertex()
                 {
                     Position = ReadVector3(reader),
                     Normal = ReadVector3(reader),
@@ -134,12 +136,9 @@ namespace BevelConverter
 
                 if (vertSize > 36)
                 {
-                    byte r = reader.ReadByte(),
-                         g = reader.ReadByte(),
-                         b = reader.ReadByte(),
-                         a = reader.ReadByte();
+                    int rgba = reader.ReadInt32();  
+                    int argb = (rgba << 24 | rgba >> 8);
 
-                    int argb = (a << 24 | r << 16 | g << 8 | b);
                     vert.Color = Color.FromArgb(argb);
                     vert.HasColor = true;
                 }
@@ -165,13 +164,11 @@ namespace BevelConverter
                     mesh.LODs.Add(lod);
                 }
             }
-            else
-            {
-                CheckDefaultLODs(mesh);
-            }
+            
+            CheckLOD(mesh);
         }
 
-        public void AddLod(Mesh lodMesh)
+        public void AddLOD(Mesh lodMesh)
         {
             Verts.AddRange(lodMesh.Verts);
 
@@ -232,11 +229,11 @@ namespace BevelConverter
 
                     if (vertex.HasColor)
                     {
-                        Color color = vertex.Color;
-                        writer.Write(color.R);
-                        writer.Write(color.G);
-                        writer.Write(color.B);
-                        writer.Write(color.A);
+                        var color = vertex.Color;
+                        int argb = color.ToArgb();
+
+                        int rgba = (argb << 8 | argb >> 24);
+                        writer.Write(rgba);
                     }
                     else
                     {
@@ -293,13 +290,14 @@ namespace BevelConverter
 
                     if (cmd == "v" || cmd == "vn")
                     {
-                        float x = float.Parse(buffer[1]),
-                              y = float.Parse(buffer[2]),
-                              z = float.Parse(buffer[3]);
+                        float[] input = buffer
+                            .Skip(1)
+                            .Select(float.Parse)
+                            .ToArray();
 
-                        Vector3 value = new Vector3(x, y, z);
-
+                        var value = new Vector3(input);
                         var target = (cmd == "v" ? posTable : normTable);
+
                         target.Add(value);
                     }
                     else if (cmd == "f")
@@ -340,8 +338,7 @@ namespace BevelConverter
                 }
             }
 
-            CheckDefaultLODs(mesh);
-            return mesh;
+            return CheckLOD(mesh);
         }
 
         public static Mesh FromBuffer(byte[] data)

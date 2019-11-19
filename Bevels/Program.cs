@@ -7,12 +7,12 @@ using System.Text;
 using System.Windows.Forms;
 
 using RobloxFiles;
+using RobloxFiles.Enums;
 using RobloxFiles.DataTypes;
-using RobloxFiles.XmlFormat;
 
 using Microsoft.Win32;
 
-namespace BevelConverter
+namespace BevelGenerator
 {
     class Program
     {
@@ -186,37 +186,45 @@ namespace BevelConverter
         static void ProcessFileArg(string filePath)
         {
             RobloxFile file = RobloxFile.Open(filePath);
-            Instance exportBin = file.FindFirstChild("ExportBin");
+            var exportBin = file.FindFirstChild<Folder>("ExportBin");
 
             if (exportBin != null)
                 exportBin.Name = "BevelCache";
             else
                 return;
 
-            Instance[] unions = exportBin.GetChildren()
-                .Where((child) => child.ClassName == "UnionOperation")
-                .OrderBy(child => child.Name)
-                .ToArray();
-
+            var unions = exportBin.GetChildrenOfType<UnionOperation>();
+            
             for (int i = 0; i < unions.Length; i++)
             {
-                Instance union = unions[i];
+                UnionOperation union = unions[i];
                 string name = union.Name;
 
                 Console.WriteLine("Working on {0}... ({1}/{2})", union.Name, i, unions.Length);
-                union.ClassName = "MeshPart";
-
-                union.RemoveProperty("AssetId");
-                union.RemoveProperty("MeshData");
-                union.RemoveProperty("ChildData");
-                union.RemoveProperty("UsePartColor");
-
                 string meshId = ProcessInput(name);
 
                 if (meshId == null)
                     continue;
 
-                union.SetProperty("MeshId", meshId);
+                MeshPart bevelMesh = new MeshPart()
+                {
+                    Name = name,
+                    MeshId = meshId,
+
+                    Size = union.Size,
+                    InitialSize = union.InitialSize,
+                    RenderFidelity = RenderFidelity.Automatic,
+
+                    PhysicsData = union.PhysicsData,
+                    CollisionFidelity = CollisionFidelity.Box,
+                    PhysicalConfigData = union.PhysicalConfigData,
+                };
+
+                foreach (string tag in union.Tags)
+                    bevelMesh.Tags.Add(tag);
+
+                bevelMesh.Parent = exportBin;
+                union.Parent = null;
             }
 
             using (FileStream export = File.OpenWrite(filePath))
