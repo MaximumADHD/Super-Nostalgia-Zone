@@ -26,13 +26,12 @@ local function serializeColor3(color)
 	return r .. g .. b
 end
 
-local function computeEpsilon(bc, color)
-	local bColor = bc.Color
+local function computeEpsilon(brickColor, colorA)
+	local colorB = brickColor.Color
 	
-	local v0 = Vector3.new(bColor.r, bColor.g, bColor.b)
-	local v1 = Vector3.new(color.r, color.g, color.b)
-	
-	return (v1-v0).Magnitude
+	return math.abs(colorA.R - colorB.R)
+		 + math.abs(colorA.G - colorB.G)
+		 + math.abs(colorA.B - colorB.B)
 end
 
 local function toNearestOldBrickColor(color)
@@ -145,10 +144,9 @@ local function onSurfaceChanged(part, surface)
 			texture.Parent = part
 		end
 		
-		-- Select the texture id based on the even/odd dimensions of the UV map.
-		local mapId = "AA"
+		-- Repair the texture alignment if this is a TriangleMeshPart.
 		
-		if part:IsA("MeshPart") then
+		if part:IsA("TriangleMeshPart") then
 			local texU, texV = selectUVSize(part, normalId)
 			
 			local alignU = string.format("%i", (texU % 2) + .5)

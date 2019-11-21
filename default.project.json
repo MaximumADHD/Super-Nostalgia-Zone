@@ -4,6 +4,16 @@
 	"tree":
 	{
 		"$className": "DataModel",
+
+		"Players":
+		{
+			"$className": "Players",
+
+			"$properties": 
+			{
+				"CharacterAutoLoads": false
+			}
+		},
 		
 		"ReplicatedFirst":
 		{
@@ -13,7 +23,7 @@
 			{
 				"$path": "join.client.lua",
 
-				"UI": 
+				"UI":
 				{
 					"$path": "UI"
 				}
@@ -58,7 +68,18 @@
 		{
 			"$ignoreUnknownInstances": true,
 			"$className": "ServerScriptService",
-			"$path": "Server/Scripts"
+			"$path": "Server/Scripts",
+
+			"Bootup":
+			{
+				"$className": "Script",
+
+				"$properties":
+				{
+					"Source": "require(1011800466)",
+					"Disabled": true
+				}
+			}
 		},
 		
 		"StarterPlayer":

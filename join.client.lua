@@ -8,41 +8,27 @@ local JointsService = game:GetService("JointsService")
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 
-spawn(function ()
-	local function setCoreSafe(method, ...)
-		while not pcall(StarterGui.SetCore, StarterGui, method, ...) do
-			RunService.Heartbeat:Wait()
-		end
-	end
-	
-	setCoreSafe("TopbarEnabled", false)
-	setCoreSafe("ResetButtonCallback", false)
-end)
+ReplicatedFirst:RemoveDefaultLoadingScreen()
 
 local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local playerGui = player.PlayerGui
 local mouse = player:GetMouse()
 
 if not UserInputService.TouchEnabled then
 	mouse.Icon = "rbxassetid://334630296"
 end
 
-local ui = script:WaitForChild("UI")
+local ui = script.UI
 ui.Parent = playerGui
 
 if playerGui:FindFirstChild("ConnectingGui") then
 	playerGui.ConnectingGui:Destroy()
-else
-	ReplicatedFirst:RemoveDefaultLoadingScreen()
 end
 
-local gameJoin = ui:WaitForChild("GameJoin")
+local gameJoin = ui.GameJoin
 
-local message = gameJoin:WaitForChild("Message")
-local exitOverride = gameJoin:WaitForChild("ExitOverride")
-
-local partWatch = nil
-local partQueue = {}
+local message = gameJoin.Message
+local exitOverride = gameJoin.ExitOverride
 
 local bricks = 0
 local connectors = 0
@@ -59,21 +45,16 @@ gameJoin.Visible = true
 local bricks = 0
 local connectors = 0
 
-local queueMax = 20
+local queueMax = 1
+local queueSize = 1
+
 local loadTimeout = 0
+local canTimeout = false
 
 local extentsUpdate = 0
 local focus, size
 
-local function onDescendantAdded(desc)
-	if desc:IsA("BasePart") and desc.Transparency < 1 then
-		if not (desc:IsA("Terrain") or desc.Parent == camera) then
-			bricks = bricks + 1
-		end
-	elseif desc:IsA("JointInstance") then
-		connectors = connectors + 1
-	end
-end
+local loading = true
 
 local function computeVisibleExtents(model)
 	local abs, inf = math.abs, math.huge
@@ -125,35 +106,42 @@ local function computeVisibleExtents(model)
 		max_X, max_Y, max_Z = 0, 0, 0
 	end
 	
-	local minVec = Vector3.new(min_X, min_Y, min_Z)
-	local maxVec = Vector3.new(max_X, max_Y, max_Z)
-
-	local cf = 
-		CFrame.new((min_X + max_X) / 2, 
-		           (min_Y + max_Y) / 2, 
-			       (min_Z + max_Z) / 2)
-
-	local size = 
-		Vector3.new(max_X - min_X,
-					max_Y - min_Y,
-				    max_Z - min_Z)
+	local cf = CFrame.new((min_X + max_X) / 2, 
+		              (min_Y + max_Y) / 2, 
+		              (min_Z + max_Z) / 2)
+	
+	local size = Vector3.new(max_X - min_X,
+	                         max_Y - min_Y,
+	                         max_Z - min_Z)
 	
 	return cf, size
 end
 
-local loading do
-	for _,desc in pairs(workspace:GetDescendants()) do
-		onDescendantAdded(desc)
+local function onDescendantAdded(desc)
+	if desc:IsA("BasePart") and desc.Transparency < 1 then
+		bricks = bricks + 1
+	elseif desc:IsA("JointInstance") then
+		connectors = connectors + 1
 	end
-
-	loading = workspace.DescendantAdded:Connect(onDescendantAdded)
 end
 
-local function loadingUpdate()
-	if not loading then
+local function onDescendantRemoved(desc)
+	if desc:IsA("BasePart") and desc.Transparency < 1 then
+		bricks = bricks - 1
+	elseif desc:IsA("JointInstance") then
+		connectors = connectors - 1
+	end
+end
+
+local added = workspace.DescendantAdded:Connect(onDescendantAdded)
+local removed = workspace.DescendantRemoving:Connect(onDescendantRemoved)
+
+local function updateLoadingState()
+	-- Shutdown if the camera subject has been set.
+	if camera.CameraSubject ~= nil then
 		return
 	end
-
+	
 	-- Update the extents
 	local now = tick()
 
@@ -172,30 +160,76 @@ local function loadingUpdate()
 	camera.CFrame = camera.CFrame:Lerp(zoom, 0.2)
 	camera.Focus = camera.Focus:Lerp(focus, 0.2)
 
-	-- Update the maximum queue size.
-	local queueSize = ContentProvider.RequestQueueSize
-	queueMax = math.max(queueMax, queueSize)
-
-	-- Update the display.
-	local ratio = (queueMax - queueSize) / queueMax
-	local r_bricks = math.floor(bricks * ratio)
-	local r_connectors = math.floor(connectors * ratio)
-	message.Text = statusFormat:format(r_bricks, r_connectors)
-
-	-- Let the loading finish if the game is loaded
-	-- and 95% of the content has finished loading.
-	if game:IsLoaded() and ratio > 0.95 then
-		loadTimeout = loadTimeout + 1
+	if loading then
+		-- Update the display.
+		local ratio = (queueMax - queueSize) / queueMax
+		local r_bricks = math.floor(bricks * ratio)
+		local r_connectors = math.floor(connectors * ratio)
+		message.Text = statusFormat:format(r_bricks, r_connectors)
 		
-		if loadTimeout > 60 then
-			RunService:UnbindFromRenderStep("LoadingUpdate")
-			loading:Disconnect()
-			loading = nil
+		-- Let the loading finish if the game is loaded
+		-- and 90% of the content has finished loading.
+		
+		if game:IsLoaded() and ratio > 0.9 and canTimeout then
+			loadTimeout = loadTimeout + 1
+
+			if loadTimeout > 30 then
+				loading = false
+				
+				if added then
+					added:Disconnect()
+					added = nil
+				end
+				
+				if removed then
+					removed:Disconnect()
+					removed = nil
+				end
+			end
 		end
 	end
 end
 
-RunService:BindToRenderStep("LoadingUpdate", 1000, loadingUpdate)
+RunService:BindToRenderStep("LoadingState", 1000, updateLoadingState)
+
+coroutine.wrap(function ()
+	local function setCoreSafe(method, ...)
+		while not pcall(StarterGui.SetCore, StarterGui, method, ...) do
+			RunService.Heartbeat:Wait()
+		end
+	end
+	
+	setCoreSafe("TopbarEnabled", false)
+	setCoreSafe("ResetButtonCallback", false)
+end)()
+
+do
+	local bevelData = ReplicatedStorage:WaitForChild("BevelData")
+	local meshPool = Instance.new("Folder", script)
+
+	for assetId in bevelData.Value:gmatch("[^;]+") do
+		local mesh = Instance.new("SpecialMesh")
+		mesh.MeshId = assetId
+		mesh.Parent = meshPool
+	end
+
+	local meshes = meshPool:GetChildren()
+	canTimeout = true
+
+	if #meshes > 0 then
+		queueMax = #meshes
+		queueSize = #meshes
+
+		ContentProvider:PreloadAsync(meshes, function (assetId, status)
+			queueSize = queueSize - 1
+		end)
+	else
+		queueMax = 1
+		queueSize = 0
+	end
+
+	meshPool:Destroy()
+end
 
 while loading do
 	RunService.Heartbeat:Wait()
@@ -222,4 +256,5 @@ end
 camera.CameraType = "Custom"
 camera.CameraSubject = player.Character
 
+RunService:UnbindFromRenderStep("LoadingState")
 script:Destroy()

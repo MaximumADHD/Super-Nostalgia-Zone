@@ -5,6 +5,8 @@
 	{
 		"ResetOnSpawn": false,
 		"IgnoreGuiInset": true,
+		
+		"DisplayOrder": 10000,
 		"ZIndexBehavior": "Sibling"
 	}
 }

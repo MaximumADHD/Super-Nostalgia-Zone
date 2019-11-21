@@ -7,7 +7,7 @@ local player = Players.LocalPlayer
 local hintBin = Instance.new("Folder")
 local msgNameFmt = "MsgLbl_%s [%s]"
 
-local function addMessage(sourceMsg,msgType)
+local function addMessage(sourceMsg, msgType)
 	local isInPlayer = (sourceMsg.Parent == player)
 	local msgType = sourceMsg.ClassName
 	
@@ -63,7 +63,7 @@ local function addMessage(sourceMsg,msgType)
 	--]]
 
 	if msgType == "Hint" then
-		wait()
+		RunService.Heartbeat:Wait()
 		sourceMsg.Parent = hintBin
 	end
 	

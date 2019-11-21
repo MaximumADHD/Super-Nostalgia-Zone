@@ -89,7 +89,7 @@ local player = Players.LocalPlayer
 local fullscreen = buttons.Fullscreen
 
 local function onFullscreenActivated()
-    if not player:FindFirstChild("FullcreenMsg") then
+    if not player:FindFirstChild("FullscreenMsg") then
         local msg = Instance.new("Message")
         msg.Name = "FullscreenMsg"
         msg.Text = "This button is just here for legacy aesthetics, and has no functionality."

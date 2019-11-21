@@ -20,7 +20,7 @@
 				<B>0.2078432</B>
 			</Color3>
 			<token name="BorderMode">0</token>
-			<int name="BorderSizePixel">1</int>
+			<int name="BorderSizePixel">0</int>
 			<bool name="ClipsDescendants">false</bool>
 			<bool name="Draggable">false</bool>
 			<token name="Font">9</token>

@@ -2,11 +2,12 @@
 -- Initialization
 ------------------------------------------------------------------------------------------------
 
-local CollectionService = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CollectionService = game:GetService("CollectionService")
 
 local function getFlag(name)
 	local flag = ServerStorage:FindFirstChild(name)
@@ -15,6 +16,10 @@ end
 
 local enableBevels = getFlag("EnableBevels")
 local debugMode = getFlag("DevTestMode")
+
+local bevelData = Instance.new("StringValue")
+bevelData.Name = "BevelData"
+bevelData.Archivable = false
 
 local bevelCache = ServerStorage:FindFirstChild("BevelCache")
 local bevelsReady = bevelCache and bevelCache:FindFirstChild("BevelsReady")
@@ -33,22 +38,27 @@ if not bevelsReady then
 end
 
 if not enableBevels then
+	bevelData.Parent = ReplicatedStorage
 	bevelsReady.Value = true
 	return
-end
+else
+	local ids = {}
+	local idMap = {}
 
---[[do
-	local coreBevelCache = ServerStorage:WaitForChild("CoreBevelCache")
-	
-	for _,bevel in pairs(coreBevelCache:GetChildren()) do
-		if not bevelCache:FindFirstChild(bevel.Name) then
-			bevel.Parent = bevelCache
-			bevel.Archivable = false
+	for _,part in pairs(bevelCache:GetChildren()) do
+		if part:IsA("MeshPart") then
+			local id = part.MeshId
+
+			if not idMap[id] then
+				idMap[id] = true
+				table.insert(ids, id)
+			end
 		end
 	end
 	
-	coreBevelCache:Destroy()
-end]]
+	bevelData.Value = table.concat(ids, ";")
+	bevelData.Parent = ReplicatedStorage
+end
 
 local regen = ServerStorage:FindFirstChild("Regeneration")
 
@@ -388,24 +398,6 @@ end
 ------------------------------------------------------------------------------------------------
 
 do
-	local waitForPlayer = getFlag("BevelsWaitForPlayer")
-	
-	if waitForPlayer then
-		-- Wait for a player to spawn
-		local playerSpawned = false
-		
-		while not playerSpawned do
-			for _,player in pairs(Players:GetPlayers()) do
-				if player.Character and player.Character:IsDescendantOf(workspace) then
-					playerSpawned = true
-					break
-				end
-			end
-			
-			workspace.ChildAdded:Wait()
-		end
-	end
-	
 	warn("Solving bevels...")
 	
 	-- Collect all blocks currently in the workspace.
@@ -421,56 +413,6 @@ do
 			
 			table.insert(initialPass, desc)
 		end
-	end
-	
-	if waitForPlayer then	
-		-- Sort the blocks by the sum of their distances from players in the game.
-		local samplePoints = {}
-		
-		for _,player in pairs(Players:GetPlayers()) do
-			local char = player.Character
-			if char then
-				local root = char.PrimaryPart
-				if root then
-					local rootPos = root.Position
-					table.insert(samplePoints, rootPos)
-				end
-			end
-		end
-		
-		table.sort(initialPass, function (a, b)
-			local distSumA = 0
-			local distSumB = 0
-			
-			local posA = a.Position
-			local posB = b.Position
-			
-			for _,rootPos in pairs(samplePoints) do
-				local distA = (rootPos - posA).Magnitude
-				distSumA = distSumA + distA
-				
-				local distB = (rootPos - posB).Magnitude
-				distSumB = distSumB + distB
-			end
-			
-			if distSumA ~= distSumB then
-				return distSumA < distSumB
-			end
-			
-	        if posA.Y ~= posB.Y then
-	            return posA.Y < posB.Y
-	        end
-	       
-	        if posA.X ~= posB.X then
-	            return posA.X < posB.X
-	        end
-	       
-	        if posA.Z ~= posB.Z then
-	            return posA.Z < posB.Z
-	        end		
-	
-			return 0
-		end)
 	end
 	
 	if debugMode then
