@@ -38,9 +38,12 @@ submitUpdate.Parent = DraggerService
 local draggerScript = script:WaitForChild("Dragger")
 
 local activeKeys = {}
-local playerToKey = {}
-local partToKey = {}
 local debounce = {}
+
+local weakTable = { __mode = 'k' }
+
+local playerToKey = setmetatable({}, weakTable)
+local partToKey = setmetatable({}, weakTable)
 
 local SIMULATE_TAG = "SimulateAfterDrag"
 local NO_BREAK_TAG = "GorillaGlue"
@@ -55,14 +58,14 @@ local function canGiveKey(player, part)
 	if part.Locked then
 		return false
 	end
+
 	local playerHasKey = playerToKey[player]
-	if playerHasKey then
-		return false
-	end
 	local partHasKey = partToKey[part]
-	if partHasKey then
+
+	if playerHasKey or partHasKey then
 		return false
 	end
+
 	return true
 end
 
@@ -72,104 +75,26 @@ local function claimAssembly(player, part)
 	end
 end
 
-local function validJointsOf(part)
-	return coroutine.wrap(function ()
-		for _,joint in pairs(part:GetJoints()) do
-			if not CollectionService:HasTag(joint, NO_BREAK_TAG) then
-				coroutine.yield(joint)
-			end
-		end
-	end)
-end
-
-local function breakJoints(part)
-	for joint in validJointsOf(part) do
-		if not CollectionService:HasTag(joint, NO_BREAK_TAG) then
-			joint:Destroy()
-		end
-	end	
-end
-
-local function makeJoints(part)
-	-- Connect this part to a nearby surface
-	workspace:JoinToOutsiders({part}, "Surface")
-end
-
 local function removePartKey(key)
 	local data = activeKeys[key]
+
 	if data then
 		local player = data.Player
+		local part = data.Part
+
 		if player then
 			playerToKey[player] = nil
 		end
 		
-		local part = data.Part
-		
 		if part then
-			makeJoints(part)
-			
-			if CollectionService:HasTag(part, SIMULATE_TAG) then
-				data.Anchored = false
-				CollectionService:RemoveTag(part, SIMULATE_TAG)
-			end
-			
+			part:MakeJoints()
 			part.Anchored = data.Anchored
+
 			claimAssembly(player, part)
-			
 			partToKey[part] = nil
 		end
 		
 		activeKeys[key] = nil
-	end
-end
-
-local function restoreJointUpstream(part)
-	local collectedParts = {}
-	
-	if part and CollectionService:HasTag(part, SIMULATE_TAG) then
-		CollectionService:RemoveTag(part, SIMULATE_TAG)
-		part.Anchored = false
-		
-		makeJoints(part)
-		
-		for joint in validJointsOf(part) do
-			local part0 = joint.Part0
-			local part1 = joint.Part1
-			
-			if part0 and part ~= part0 then
-				collectedParts[part0] = true
-				restoreJointUpstream(part0)
-			end
-			
-			if part1 and part ~= part1 then
-				collectedParts[part1] = true
-				restoreJointUpstream(part1)
-			end
-		end
-	end
-	
-	return collectedParts
-end
-
-local function collapseJointUpstream(part)
-	if part and not (part.Locked or CollectionService:HasTag(part, SIMULATE_TAG)) then
-		CollectionService:AddTag(part, SIMULATE_TAG)
-		part.Anchored = true
-		
-		for joint in validJointsOf(part) do
-			local part0 = joint.Part0
-			local part1 = joint.Part1
-			
-			if part0 and part ~= part0 then
-				collapseJointUpstream(part0)
-			end
-			
-			if part1 and part ~= part1 then
-				collapseJointUpstream(part1)
-			end
-		end
-		
-		breakJoints(part)
 	end
 end
 
@@ -182,7 +107,7 @@ function draggerGateway.OnServerInvoke(player, request, ...)
 			local newPart = part:Clone()
 			newPart.Parent = workspace
 			
-			breakJoints(newPart)
+			newPart:BreakJoints()
 			newPart.CFrame = CFrame.new(part.Position + Vector3.new(0, part.Size.Y, 0))
 			
 			local copySound = Instance.new("Sound")
@@ -203,17 +128,9 @@ function draggerGateway.OnServerInvoke(player, request, ...)
 			playerToKey[player] = key
 			partToKey[part] = key
 			
-			local collected = restoreJointUpstream(part)
-			
 			local anchored = part.Anchored
 			part.Anchored = true
-			breakJoints(part)
-			
-			for otherPart in pairs(collected) do
-				if otherPart:IsGrounded() then
-					collapseJointUpstream(otherPart)
-				end
-			end
+			part:BreakJoints()
 			
 			activeKeys[key] =
 			{
@@ -260,19 +177,12 @@ function draggerGateway.OnServerInvoke(player, request, ...)
 				s.Volume = 1
 				s.PlayOnRemove = true
 				s.Parent = part
-				
-				local connectedParts = restoreJointUpstream(part)
+
 				part:Destroy()
-				
-				for otherPart in pairs(connectedParts) do
-					if otherPart:IsGrounded() then
-						collapseJointUpstream(otherPart)
-					end
-				end
 			end
 			
 			wait(.1)
-			debounce[player] = false
+			debounce[player] = nil
 		end
 	end
 end
@@ -283,6 +193,7 @@ local function onChildAdded(child)
 			local tool = Instance.new("Tool")
 			tool.Name = draggerTool
 			tool.RequiresHandle = false
+			tool.CanBeDropped = false
 			
 			local newDragger = draggerScript:Clone()
 			newDragger.Parent = tool
@@ -315,7 +226,7 @@ local function onSubmitUpdate(player, key, cframe)
 		if owner == player then
 			local part = keyData.Part
 			if part and part:IsDescendantOf(workspace) then
-				breakJoints(part)
+				part:BreakJoints()
 				part.CFrame = cframe
 			end
 		end
@@ -327,15 +238,6 @@ for _, player in pairs(game.Players:GetPlayers()) do
 end
 
 submitUpdate.OnServerEvent:Connect(onSubmitUpdate)
+
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoved)
-
--- Garbage Collection
-
-while wait(5) do
-	for part, key in pairs(partToKey) do
-		if not part:IsDescendantOf(workspace) then
-			removePartKey(key)
-		end
-	end
-end

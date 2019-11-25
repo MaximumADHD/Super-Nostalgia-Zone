@@ -12,7 +12,8 @@ for _,v in ipairs(brickColors) do
 	oldColors[v] = true
 end
 
-local textureCaches = {}
+local textureCaches = setmetatable({}, { __mode = 'k'})
+local weakValueMT = { __mode = 'v'}
 local colorCaches = {}
 
 local char = string.char
@@ -133,6 +134,8 @@ local function onSurfaceChanged(part, surface)
 		
 		if not (texture and texture:IsA("Texture")) then
 			texture = Instance.new("Texture")
+			texture.Archivable = false
+
 			cache[surface] = texture
 			
 			texture.StudsPerTileU = 2;
@@ -173,20 +176,8 @@ local function onTransparencyChanged(part)
 	end
 end
 
-local function onParentChanged(part)
-	local texureCache = textureCaches[part]
-	
-	if not part:IsDescendantOf(workspace) then
-		for _,tex in pairs(texureCache) do
-			tex:Destroy()
-		end
-		
-		texureCache[part] = nil
-	end
-end
-	
 local function registerPartSurfaces(part)
-	local textureCache = {}
+	local textureCache = setmetatable({}, weakValueMT)
 	textureCaches[part] = textureCache
 	
 	for surface in pairs(surfaces) do
@@ -277,8 +268,6 @@ local function onItemChanged(object, descriptor)
 			onTransparencyChanged(object)
 		elseif descriptor == "BrickColor" then
 			onBrickColorUpdated(object)
-		elseif descriptor == "Parent" then
-			onParentChanged(object)
 		end
 	end
 end
@@ -291,4 +280,3 @@ workspace.DescendantAdded:Connect(onDescendantAdded)
 game.ItemChanged:Connect(onItemChanged)
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-

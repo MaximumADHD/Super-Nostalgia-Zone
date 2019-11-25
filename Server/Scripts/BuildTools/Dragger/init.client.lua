@@ -145,7 +145,7 @@ end
 
 local function startDraggerAction(mPart)
 	if mode == "Delete" then
-		gateway:InvokeServer("RequestDelete",mPart)
+		gateway:InvokeServer("RequestDelete", mPart)
 		return
 	end
 	
@@ -166,16 +166,7 @@ local function startDraggerAction(mPart)
 		
 		while down do
 			local now = tick()
-			local joints = {}
 			
-			for _,joint in pairs(mousePart:GetJoints()) do
-				if CollectionService:HasTag(joint, "GorillaGlue") then
-					joints[joint] = joint.Parent
-					joint.Parent = nil
-				end
-			end
-			
-			--local mousePart = selection.Adornee
 			if down then
 				Dragger:MouseMove(mouse.UnitRay)
 			end
@@ -193,16 +184,19 @@ local function startDraggerAction(mPart)
 				end
 			end
 			
-			for joint, parent in pairs(joints) do
-				joint.Parent = parent
-			end
-			
 			RunService.Heartbeat:Wait()
 		end
 		
 		selection.Transparency = 1
-		gateway:InvokeServer("ClearKey", dragKey)
+
+		-- Its the servers job to deal with these, but thanks Roblox :)
+		for _,child in pairs(mousePart:GetChildren()) do
+			if child:IsA("JointInstance") then
+				child:Destroy()
+			end
+		end
 		
+		gateway:InvokeServer("ClearKey", dragKey)
 		currentKey = nil
 	end
 end
