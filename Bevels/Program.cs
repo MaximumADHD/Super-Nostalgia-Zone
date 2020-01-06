@@ -183,7 +183,7 @@ namespace BevelGenerator
             return result;
         }
 
-        static void ProcessFileArg(string filePath)
+        static void ProcessModelFile(string filePath)
         {
             RobloxFile file = RobloxFile.Open(filePath);
             var exportBin = file.FindFirstChild<Folder>("ExportBin");
@@ -194,7 +194,7 @@ namespace BevelGenerator
                 return;
 
             var unions = exportBin.GetChildrenOfType<UnionOperation>();
-            
+
             for (int i = 0; i < unions.Length; i++)
             {
                 UnionOperation union = unions[i];
@@ -238,6 +238,36 @@ namespace BevelGenerator
 
             Console.ReadKey();
             Console.Clear();
+        }
+        
+        static void ProcessObjFile(FileInfo info)
+        {
+            string objPath = info.FullName;
+            Mesh mesh = Mesh.FromObjFile(objPath);
+
+            string meshPath = objPath.Replace(info.Extension, ".mesh");
+            FileStream file = File.OpenWrite(meshPath);
+
+            using (file)
+            {
+                file.SetLength(0);
+                mesh.Save(file);
+            }
+
+            Debugger.Break();
+        }
+
+        static void ProcessFileArg(string filePath)
+        {
+            FileInfo info = new FileInfo(filePath);
+
+            if (info.Extension == ".obj")
+            {
+                ProcessObjFile(info);
+                return;
+            }
+
+            ProcessModelFile(filePath);
         }
 
         [STAThread]

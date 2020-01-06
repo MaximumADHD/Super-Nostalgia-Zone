@@ -148,7 +148,6 @@ local function updateSky()
 			lastTime = seconds
 		end
 		
-		
 		skyAdorn.CFrame = CFrame.new(camera.CFrame.Position) * CFrame.new(Vector3.new(), sunDir)
 		skyAdorn.Parent = (nightFrame.BackgroundTransparency < 1 and camera or nil)
 	else

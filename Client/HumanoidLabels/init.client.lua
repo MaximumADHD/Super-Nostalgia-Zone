@@ -1,4 +1,4 @@
-local humanoids = setmetatable({}, { __mode = 'k' })
+local humanoids = {}
 
 local player = game.Players.LocalPlayer
 local pgui = player:WaitForChild("PlayerGui")
@@ -35,8 +35,11 @@ local function setupHumanoid(h)
 		
 		if char then
 			while not char:FindFirstChild("Head") do
-				if h.Parent ~= char then break end
-				char.ChildAdded:wait()
+				if h.Parent ~= char then 
+					break 
+				end
+				
+				char.ChildAdded:Wait()
 			end
 			
 			local head = char:FindFirstChild("Head")
@@ -98,6 +101,7 @@ local function setupHumanoid(h)
 			end
 		end
 	end
+
 	onAncestryChanged()
 	h.AncestryChanged:Connect(onAncestryChanged)
 end

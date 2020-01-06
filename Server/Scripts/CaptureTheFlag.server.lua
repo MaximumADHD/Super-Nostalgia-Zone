@@ -14,12 +14,16 @@ local function restoreFlag(flag)
 	local flagStand = owner and owner.Part0
 	
 	if owner and flagStand then
+		print("deleting grip")
+
 		for _,joint in pairs(flag:GetJoints()) do
 			if joint.Name == "RightGrip" then
 				joint:Destroy()
 			end
 		end
 		
+		print("restoring name")
+
 		if flag.Name == "Handle" then
 			local tool = flag.Parent
 			if tool:IsA("Tool") then
@@ -28,16 +32,25 @@ local function restoreFlag(flag)
 			end
 		end
 		
-		flag.CFrame = flagStand.CFrame
+		print("restoring flag")
+
+		flag.Anchored = true
+		flag.CanCollide = true
 		flag.Parent = flagStand.Parent
 		
-		wait()
+		flag.CFrame = flagStand.CFrame
+			* CFrame.new(0, flagStand.Size.Y / 2, 0)
+			* CFrame.new(0, flag.Size.Y / 2, 0)
 		
 		flag.Velocity = Vector3.new()
 		flag.RotVelocity = Vector3.new()
-		
-		owner.Part1 = flag
+
+		wait()
+
+		owner.Enabled = true
 		flag.Anchored = false
+
+		print("done!")
 	end	
 end
 
@@ -101,7 +114,7 @@ local function mountFlagAsTool(flag, humanoid)
 	CollectionService:AddTag(tool, "Flag")
 	
 	tool.Parent = workspace
-	owner.Part1 = nil
+	owner.Enabled = false
 	
 	flag.Name = "Handle"
 	flag.Parent = tool
@@ -117,6 +130,7 @@ local function onFlagAdded(flag)
 	
 	-- Mount TeamColor
 	local teamColor = flag:FindFirstChild("TeamColor")
+	local flagBackup
 	
 	if not teamColor then
 		teamColor = Instance.new("BrickColorValue")
@@ -136,8 +150,7 @@ local function onFlagAdded(flag)
 	end
 	
 	if flagStand then
-		owner = Instance.new("Weld")
-		owner.C0 = flagStand.CFrame:ToObjectSpace(flag.CFrame)
+		owner = Instance.new("WeldConstraint")
 		owner.Name = "FlagStand"
 		owner.Part0 = flagStand
 		owner.Parent = flag
@@ -151,27 +164,7 @@ local function onFlagAdded(flag)
 		owner.Part1 = flag
 		CollectionService:AddTag(owner, "GorillaGlue")
 	end
-	
-	spawn(function ()
-		-- Try to keep the flag from falling out of the world.
-		local deathPlane = workspace.FallenPartsDestroyHeight
-		
-		while flag:IsDescendantOf(workspace) do
-			if flag.Position.Y < deathPlane + 200 then
-				local tool = flag.Parent
-				
-				if tool:IsA("Tool") then
-					tool.Parent = workspace
-					wait()
-				end
-				
-				restoreFlag(flag)
-			end
-			
-			wait()
-		end
-	end)
-	
+
 	local function onTouched(hit)
 		local char = hit.Parent
 		if char then
@@ -184,8 +177,10 @@ local function onFlagAdded(flag)
 				end
 				
 				if player.TeamColor == teamColor.Value then
-					if owner.Part1 ~= flag then
+					if owner and owner.Part1 ~= flag then
 						restoreFlag(flag)
+					elseif owner == nil then
+						flag = nil
 					end
 				else
 					mountFlagAsTool(flag, humanoid)
@@ -194,7 +189,55 @@ local function onFlagAdded(flag)
 		end
 	end
 	
-	flag.Touched:Connect(onTouched)
+	spawn(function ()
+		local deathPlane = workspace.FallenPartsDestroyHeight
+
+		while wait() do
+			-- Try to keep the flag from falling out of the world.
+			if not flagBackup then
+				flagBackup = flag:Clone()
+			end
+
+			local resetClock = 400
+			flag.Touched:Connect(onTouched)
+			
+			while flag:IsDescendantOf(workspace) do
+				if flag.Position.Y < deathPlane + 200 then
+					local tool = flag.Parent
+					
+					if tool:IsA("Tool") then
+						tool.Parent = workspace
+						wait()
+					end
+					
+					restoreFlag(flag)
+				end
+
+				if (flag and owner) and not owner.Enabled and not flag.Parent:IsA("Tool") then
+					resetClock = resetClock - 1
+					
+					if resetClock <= 0 then
+						restoreFlag(flag)
+						resetClock = 400
+					end
+				else
+					resetClock = 400
+				end
+
+				wait()
+			end
+
+			flag:Destroy()
+			
+			flag = flagBackup:Clone()
+			flag.Parent = workspace
+			
+			owner = flag.FlagStand
+			restoreFlag(flag)
+			
+			wait()
+		end
+	end)
 end
 
 for _,flag in pairs(CollectionService:GetTagged(FlagInstance)) do
@@ -258,8 +301,8 @@ local function onFlagStandAdded(flagStand)
 					restoreFlag(handle)
 					
 					tool:Destroy()
-					
 					wait(1)
+					
 					debounce = false
 				end
 			end

@@ -1,7 +1,5 @@
-local Debris = game:GetService("Debris")
-
-ball = script.Parent
-damage = 20
+local ball = script.Parent
+local damage = 20
 
 function onTouched(hit)
 	if not (hit.CanCollide and hit.Parent) then
@@ -10,7 +8,7 @@ function onTouched(hit)
 	
 	local humanoid = hit.Parent:findFirstChild("Humanoid")
 		
-	if hit:getMass() < 1.2 * 200 then
+	if hit:GetMass() < 1.2 * 200 then
 		hit.BrickColor = ball.BrickColor
 	end
 	
@@ -21,14 +19,16 @@ function onTouched(hit)
 		s.formFactor = 2 -- plate
 		s.Size = Vector3.new(1,.4,1)
 		s.BrickColor = ball.BrickColor
-		
-		local v = Vector3.new(math.random(-1,1), math.random(0,1), math.random(-1,1))
+
+		local cleanup = ball.BrickCleanup:Clone()
+		cleanup.Disabled = false
+		cleanup.Parent = s
+
+		local v = Vector3.new(math.random(-1, 1), math.random(0, 1), math.random(-1, 1))
 		s.Velocity = 15 * v
 		s.CFrame = CFrame.new(ball.Position + v, v)
 		
-		Debris:AddItem(s, 24)
-		
-		s.Parent = game.Workspace
+		s.Parent = workspace
 	end
 	
 
@@ -77,7 +77,7 @@ function untagHumanoid(humanoid)
 	end
 end
 
-connection = ball.Touched:connect(onTouched)
+connection = ball.Touched:Connect(onTouched)
 
 wait(8)
-ball.Parent = nil
+ball:Destroy()

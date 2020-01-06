@@ -13,9 +13,15 @@ local function placeBrick(cf, pos, color)
 	local brick = Instance.new("Part")
 	brick.BrickColor = color
 	brick.CFrame = cf * CFrame.new(pos + brick.Size / 2)
+
+	local brickScript = Tool.TrowelBrick:Clone()
+	brickScript.Disabled = false
+	brickScript.Parent = brick
+
+	-- place the brick
 	brick.Parent = workspace
-	Debris:AddItem(brick, 24)
 	
+	-- return brick info
 	return brick, pos + brick.Size
 end
 
@@ -46,8 +52,7 @@ local function buildWall(cf)
 	return bricks
 end
 
-
-function snap(v)
+local function snap(v)
 	if math.abs(v.X) > math.abs(v.Z) then
 		if v.X > 0 then
 			return Vector3.new(1, 0, 0)
@@ -65,7 +70,7 @@ end
 
 Tool.Enabled = true
 
-function onActivated()
+local function onActivated()
 	if not Tool.Enabled then
 		return
 	end
