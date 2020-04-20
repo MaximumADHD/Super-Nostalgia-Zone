@@ -16,8 +16,6 @@ local function moveTowards(value, goal, rate)
 	end
 end
 
-local lastFloorLevel = 0
-
 local function getFloorLevel()
 	local origin = rootPart.Position
 	local ray = Ray.new(origin, rayDown)
@@ -25,16 +23,20 @@ local function getFloorLevel()
 	return pos.Y, math.clamp(math.abs(pos.Y - origin.Y), -1, 1)
 end
 
+local stepRate = (20 / 3)
+local decayRate = 0.925
+
 local lastLevel = getFloorLevel()
 local updateCon
 
-local function update()
+local function update(dt)
+	local level, dist = getFloorLevel()
+	local dt = math.min(0.1, dt)
+	
 	if humanoid.Health == 0 then
 		updateCon:Disconnect()
 		return
 	end
-	
-	local level, dist = getFloorLevel()
 	
 	if humanoid.SeatPart then
 		humanoid.HipHeight = 0
@@ -43,15 +45,17 @@ local function update()
 	end
 	
 	local yVel = rootPart.Velocity.Y
+	local step = dt * stepRate
 	
 	if math.abs(yVel) > 8 then
 		local goal = math.sign(yVel)
-		humanoid.HipHeight = moveTowards(humanoid.HipHeight, goal, 0.1)
+		humanoid.HipHeight = moveTowards(humanoid.HipHeight, goal, step)
 	elseif lastLevel ~= level then
 		humanoid.HipHeight = math.sign(lastLevel - level) * math.clamp(dist - 3, 0, 1)
 		lastLevel = level
 	else
-		humanoid.HipHeight = humanoid.HipHeight * 0.925
+		local decay = decayRate ^ (step * 60)
+		humanoid.HipHeight = humanoid.HipHeight * decay
 	end
 end
 
