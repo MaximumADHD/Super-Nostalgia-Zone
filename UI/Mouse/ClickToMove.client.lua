@@ -87,7 +87,7 @@ local function rotateCameraTowardsGoal(dt)
 		if isFinite(angleBetween) then
 			local abs = math.abs(angleBetween)
 			local sign = math.sign(angleBetween)
-			local rotation = math.min(dt * 6, abs)
+			local rotation = math.min(dt * .6, abs)
 			
 			local cfLocal = focus:toObjectSpace(cf)
 			camera.CFrame = focus * CFrame.Angles(0, -rotation * sign, 0) * cfLocal
