@@ -33,13 +33,24 @@ spawn(function ()
 end)
 
 local function update()
+	local zoom = (c.Focus.Position - c.CFrame.Position).Magnitude
 	local rotationType = GameSettings.RotationType
 	local seatPart = humanoid.SeatPart
 	
 	if rotationType.Name == "CameraRelative" and not seatPart then
-		local dir = c.CFrame.lookVector * xz
-		bg.CFrame = toRotation(dir)
-		bg.Parent = rootPart
+		local dir
+		
+		if zoom <= 1.5 then
+			dir = c.CFrame.lookVector
+		else
+			bg.Parent = nil
+		end
+		
+		if dir then
+			bg.CFrame = toRotation(dir * xz)
+			bg.Parent = rootPart
+		end
+
 		humanoid.AutoRotate = false
 	else
 		local state = humanoid:GetState()
@@ -56,5 +67,6 @@ end
 
 humanoid.AutoRotate = false
 humanoid:SetStateEnabled("Climbing",false)
-RunService.RenderStepped:connect(update)
+RunService:BindToRenderStep("GoofyMotion", 400, update)
+
 c.FieldOfView = 65
