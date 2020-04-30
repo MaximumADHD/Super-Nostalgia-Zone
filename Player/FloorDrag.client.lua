@@ -45,16 +45,15 @@ local function update(dt)
 	end
 	
 	local yVel = rootPart.Velocity.Y
-	local step = dt * stepRate
 	
 	if math.abs(yVel) > 8 then
 		local goal = math.sign(yVel)
-		humanoid.HipHeight = moveTowards(humanoid.HipHeight, goal, step)
+		humanoid.HipHeight = moveTowards(humanoid.HipHeight, goal, stepRate * dt)
 	elseif lastLevel ~= level then
 		humanoid.HipHeight = math.sign(lastLevel - level) * math.clamp(dist - 3, 0, 1)
 		lastLevel = level
 	else
-		local decay = decayRate ^ (step * 60)
+		local decay = decayRate ^ (dt * 60)
 		humanoid.HipHeight = humanoid.HipHeight * decay
 	end
 end

@@ -135,4 +135,4 @@ local function update()
 	lensFlareNode.Parent = nil
 end
 
-RunService:BindToRenderStep("LensFlareUpdate", 201, update)
+RunService:BindToRenderStep("LensFlareUpdate", 1000, update)

@@ -72,7 +72,7 @@ local function isFinite(num)
 	return num == num and num ~= 1/0 and num ~= -1/0
 end
 
-local function rotateCameraTowardsGoal()
+local function rotateCameraTowardsGoal(dt)
 	local camera = workspace.CurrentCamera
 	
 	if camera then
@@ -87,7 +87,7 @@ local function rotateCameraTowardsGoal()
 		if isFinite(angleBetween) then
 			local abs = math.abs(angleBetween)
 			local sign = math.sign(angleBetween)
-			local rotation = math.min(0.01, abs)
+			local rotation = math.min(dt * 6, abs)
 			
 			local cfLocal = focus:toObjectSpace(cf)
 			camera.CFrame = focus * CFrame.Angles(0, -rotation * sign, 0) * cfLocal
@@ -218,7 +218,8 @@ local function canRenderDisk(rendering)
 	return false
 end
 
-local function render3dAdorn()
+local function render3dAdorn(dt)
+	local dt = math.min(0.1, dt)
 	disk.Visible = canRenderDisk(true)
 	
 	if disk.Visible then
@@ -233,7 +234,7 @@ local function render3dAdorn()
 	if currentGoal then
 		goalDisk.Visible = true
 		goalDisk.CFrame = CFrame.new(currentGoal) * DISK_OFFSET
-		rotateCameraTowardsGoal()
+		rotateCameraTowardsGoal(dt)
 	else
 		goalDisk.Visible = false
 	end

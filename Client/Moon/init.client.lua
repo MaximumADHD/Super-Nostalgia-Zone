@@ -20,4 +20,4 @@ local function moonUpdate()
 	end
 end
 
-RunService:BindToRenderStep("MoonUpdate", 201, moonUpdate)
+RunService:BindToRenderStep("MoonUpdate", 1000, moonUpdate)

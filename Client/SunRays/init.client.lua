@@ -77,4 +77,4 @@ local function update()
 	adorn.Parent = nil
 end
 
-RunService:BindToRenderStep("SunRays", 201, update)
+RunService:BindToRenderStep("SunRays", 1000, update)

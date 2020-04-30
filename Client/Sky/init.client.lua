@@ -155,6 +155,6 @@ local function updateSky()
 	end
 end
 
-RunService:BindToRenderStep("UpdateSky", 201, updateSky)
+RunService:BindToRenderStep("UpdateSky", 1000, updateSky)
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

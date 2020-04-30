@@ -2,11 +2,6 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
-local playerScripts = script.Parent
-local playerModule = require(playerScripts:WaitForChild("PlayerModule"))
-
-local cameraSystem = playerModule:GetCameras()
-
 local main = require(script:WaitForChild("Main"))
 local popper = require(script:WaitForChild("Popper"))
 local opacity = require(script:WaitForChild("Opacity"))
@@ -45,16 +40,12 @@ main:SetEnabled(true)
 opacity:SetEnabled(true)
 
 -- Overload the camera update function.
-function cameraSystem:Update()
-	if cameraSystem.activeCameraController then
-		cameraSystem.activeCameraController:Enable(false)
-		cameraSystem.activeCameraController = nil
-	end
-	
+local function update()
 	main:Update()
 	popper:Update()
 	opacity:Update()
+
+	RunService:UnbindFromRenderStep("cameraRenderUpdate")
 end
 
-playerScripts:RegisterTouchCameraMovementMode(Enum.TouchCameraMovementMode.Default)
-playerScripts:RegisterComputerCameraMovementMode(Enum.ComputerCameraMovementMode.Default)
+RunService:BindToRenderStep("RetroCamera", 250, update)
