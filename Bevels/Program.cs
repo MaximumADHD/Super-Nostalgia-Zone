@@ -266,6 +266,11 @@ namespace BevelGenerator
                 ProcessObjFile(info);
                 return;
             }
+            else if (info.Extension == ".bin" || info.Extension == ".mesh")
+            {
+                Mesh mesh = Mesh.FromFile(filePath);
+                Debugger.Break();
+            }
 
             ProcessModelFile(filePath);
         }
