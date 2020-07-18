@@ -11,6 +11,7 @@ using RobloxFiles.Enums;
 using RobloxFiles.DataTypes;
 
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
 
 namespace BevelGenerator
 {
@@ -20,7 +21,7 @@ namespace BevelGenerator
         private static string bevelCacheDir;
 
         private static string studioCookies = "";
-        private static string xCsrfToken = "Fetch";
+        private static string xCsrfToken = "FETCH";
         
         private static Random rng = new Random();
 
@@ -102,7 +103,7 @@ namespace BevelGenerator
                     // Update the X-CSRF-TOKEN.
                     xCsrfToken = response.Headers.Get("X-CSRF-TOKEN");
 
-                    // Retry the request again.
+                    // Retry the upload.
                     return UploadMesh(mesh, name, desc);
                 }
                 else
@@ -240,39 +241,79 @@ namespace BevelGenerator
             Console.Clear();
         }
         
-        static void ProcessObjFile(FileInfo info)
+        static Mesh PortObjFile(FileInfo info)
         {
+            Console.WriteLine("Reading obj file...");
+
             string objPath = info.FullName;
             Mesh mesh = Mesh.FromObjFile(objPath);
 
-            string meshPath = objPath.Replace(info.Extension, ".mesh");
-            FileStream file = File.OpenWrite(meshPath);
+            Console.WriteLine("Writing mesh file...");
 
-            using (file)
+            string extension = info.Extension;
+            string filePath = objPath.Replace(extension, ".mesh");
+
+            using (FileStream file = File.OpenWrite(filePath))
             {
                 file.SetLength(0);
                 mesh.Save(file);
             }
 
-            Debugger.Break();
+            return mesh;
         }
 
         static void ProcessFileArg(string filePath)
         {
             FileInfo info = new FileInfo(filePath);
 
-            if (info.Extension == ".obj")
+            switch (info.Extension)
             {
-                ProcessObjFile(info);
-                return;
-            }
-            else if (info.Extension == ".bin" || info.Extension == ".mesh")
-            {
-                Mesh mesh = Mesh.FromFile(filePath);
-                Debugger.Break();
-            }
+                case ".obj":
+                    Mesh export = PortObjFile(info);
 
-            ProcessModelFile(filePath);
+                    Console.Write("Would you like to upload this mesh? (y/n): ");
+                    string answer = Console.ReadLine();
+
+                    if (answer.ToLower()[0] == 'y')
+                    {
+                        Console.Write("Enter a name for this mesh: ");
+                        string name = Console.ReadLine();
+
+                        Console.Write("Enter a description for this mesh: ");
+                        string desc = Console.ReadLine();
+
+                        Console.WriteLine("Uploading mesh...");
+                        long result = 0;
+
+                        try
+                        {
+                            result = UploadMesh(export, name, desc);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"An error occurred while uploading: {e.Message}");
+                        }
+                        
+                        if (result > 0)
+                        {
+                            Clipboard.SetText($"rbxassetid://{result}");
+                            Console.WriteLine($"Result -> rbxassetid://{result} (copied to clipboard)");
+                        }
+
+                        Debugger.Break();
+                    }
+
+                    break;
+                case ".bin":
+                case ".mesh":
+                    Mesh import = Mesh.FromFile(filePath);
+                    Debugger.Break();
+
+                    break;
+                default:
+                    ProcessModelFile(filePath);
+                    break;
+            }
         }
 
         [STAThread]
@@ -294,16 +335,17 @@ namespace BevelGenerator
             foreach (string name in robloxCookies.GetValueNames())
             {
                 string cookie = robloxCookies.GetString(name);
+                Match match = Regex.Match(cookie, "COOK::<([^>]*)>");
 
-                int startIndex = cookie.IndexOf("COOK::<") + 7;
-                int endIndex = cookie.IndexOf('>', startIndex);
+                if (match.Groups.Count > 1)
+                {
+                    cookie = match.Groups[1].Value;
 
-                cookie = cookie.Substring(startIndex, endIndex - startIndex);
+                    if (studioCookies.Length > 0)
+                        studioCookies += "; ";
 
-                if (studioCookies.Length > 0)
-                    studioCookies += "; ";
-
-                studioCookies += $"{name}={cookie}";
+                    studioCookies += $"{name}={cookie}";
+                }
             }
 
             if (args.Length > 0)

@@ -7,19 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using RobloxFiles;
 using RobloxFiles.DataTypes;
 
 namespace BevelGenerator
 {
-    public class Bone
+    public class Bone : Instance
     {
-        public string Name;
         public int NameIndex;
 
         public short Id;
-        public short Parent;
+        public short ParentId;
 
-        public float Angle;
+        public float Unknown;
         public CFrame CFrame;
 
         public override string ToString()
@@ -38,10 +38,16 @@ namespace BevelGenerator
         public BoneWeights? Weights;
     }
 
-    public class ParentLink
+    public class SkinData
     {
-        public int[] UnknownA;
-        public short[] UnknownB;
+        public int FacesBegin;
+        public int FacesLength;
+
+        public int VertsBegin;
+        public int VertsLength;
+
+        public int NumBones;
+        public short[] BoneIndexTree;
     }
 
     public struct BoneWeights
@@ -51,7 +57,10 @@ namespace BevelGenerator
 
         public override string ToString()
         {
-            return $"[Bones: {{{string.Join(", ", Bones)}}} | Weights: {{{string.Join(", ", Weights)}}}]";
+            var bones = string.Join(", ", Bones);
+            var weights = string.Join(", ", Weights);
+
+            return $"{{Bones: [{bones}] | Weights: [{weights}]}}";
         }
     }
 
@@ -72,12 +81,16 @@ namespace BevelGenerator
         public int NumBones = 0;
         public List<Bone> Bones;
 
-        public int NumLinks = 0;
-        public List<ParentLink> Links;
+        public int NumSkinData = 0;
+        public List<SkinData> SkinData;
 
         public int NameTableSize = 0;
         public byte[] NameTable;
-        
+
+        public bool HasLODs => (Version >= 3);
+        public bool HasSkinning => (Version >= 4);
+        public bool HasVertexColors { get; private set; }
+
         private static Vector3 ReadVector3(BinaryReader reader)
         {
             float x = reader.ReadSingle(),
@@ -87,20 +100,10 @@ namespace BevelGenerator
             return new Vector3(x, y, z);
         }
 
-        private static Mesh CheckLOD(Mesh mesh)
-        {
-            if (mesh.NumLODs == 0)
-            {
-                mesh.NumLODs = 2;
-                mesh.LODs = new List<int> { 0, mesh.NumFaces };
-            }
-
-            return mesh;
-        }
-
         private static void LoadGeometry_Ascii(StringReader reader, Mesh mesh)
         {
             string header = reader.ReadLine();
+            mesh.NumMeshes = 1;
 
             if (!header.StartsWith("version 1"))
                 throw new Exception("Expected version 1 header, got: " + header);
@@ -155,31 +158,55 @@ namespace BevelGenerator
                     }
                 }
             }
-
-            CheckLOD(mesh);
         }
 
         private static void LoadGeometry_Binary(BinaryReader reader, Mesh mesh)
         {
             byte[] binVersion = reader.ReadBytes(13); // version x.xx\n
+            var headerSize = reader.ReadUInt16();
 
-            var headerSize = reader.ReadUInt16();  
-            mesh.NumMeshes = reader.ReadUInt16();
+            if (mesh.HasSkinning)
+            {
+                mesh.NumMeshes = reader.ReadUInt16();
 
-            mesh.NumVerts = reader.ReadInt32();
-            mesh.NumFaces = reader.ReadInt32();
+                mesh.NumVerts = reader.ReadInt32();
+                mesh.NumFaces = reader.ReadInt32();
 
-            mesh.NumLODs  = reader.ReadUInt16();
-            mesh.NumBones = reader.ReadUInt16();
+                mesh.NumLODs = reader.ReadUInt16();
+                mesh.NumBones = reader.ReadUInt16();
 
-            mesh.NameTableSize = reader.ReadInt32();
-            mesh.NumLinks = reader.ReadInt32();
+                mesh.NameTableSize = reader.ReadInt32();
+                mesh.NumSkinData = reader.ReadInt32();
+            }
+            else
+            {
+                var sizeof_Vertex = reader.ReadByte();
+                mesh.HasVertexColors = (sizeof_Vertex > 36);
+                
+                _ = reader.ReadByte();
+
+                if (mesh.HasLODs)
+                {
+                    _ = reader.ReadUInt16();
+                    mesh.NumLODs = reader.ReadUInt16();
+                }
+
+                if (mesh.NumLODs > 0)
+                    mesh.NumMeshes = (ushort)(mesh.NumLODs - 1);
+                else
+                    mesh.NumMeshes = 1;
+
+                mesh.NumVerts = reader.ReadInt32();
+                mesh.NumFaces = reader.ReadInt32();
+
+                mesh.NameTable = new byte[0];
+            }
 
             mesh.LODs = new List<int>();
             mesh.Bones = new List<Bone>();
             mesh.Faces = new List<int[]>();
             mesh.Verts = new List<Vertex>();
-            mesh.Links = new List<ParentLink>();
+            mesh.SkinData = new List<SkinData>();
             
             // Read Vertices
             for (int i = 0; i < mesh.NumVerts; i++)
@@ -191,28 +218,33 @@ namespace BevelGenerator
                     UV = ReadVector3(reader)
                 };
 
-                int rgba = reader.ReadInt32();  
-                int argb = (rgba << 24 | rgba >> 8);
+                Color? color = null;
 
-                vert.Color = Color.FromArgb(argb);
+                if (mesh.HasVertexColors)
+                {
+                    int rgba = reader.ReadInt32();
+                    color = Color.FromArgb(rgba << 24 | rgba >> 8);
+                }
+                
+                vert.Color = color;
                 mesh.Verts.Add(vert);
             }
 
-            // Read Bone Weights?
-            var weightSets = new List<BoneWeights>();
-
-            for (int i = 0; i < mesh.NumVerts; i++)
+            if (mesh.HasSkinning)
             {
-                var vert = mesh.Verts[i];
-
-                var weights = new BoneWeights()
+                // Read Bone Weights?
+                for (int i = 0; i < mesh.NumVerts; i++)
                 {
-                    Bones = reader.ReadBytes(4),
-                    Weights = reader.ReadBytes(4)
-                };
+                    var vert = mesh.Verts[i];
 
-                vert.Weights = weights;
-                weightSets.Add(weights);
+                    var weights = new BoneWeights()
+                    {
+                        Bones = reader.ReadBytes(4),
+                        Weights = reader.ReadBytes(4)
+                    };
+
+                    vert.Weights = weights;
+                }
             }
 
             // Read Faces
@@ -226,9 +258,9 @@ namespace BevelGenerator
                 mesh.Faces.Add(face);
             }
 
-            // Read LOD ranges
-            if (mesh.NumLODs > 0)
+            if (mesh.HasLODs && mesh.NumLODs > 0)
             {
+                // Read LOD ranges
                 for (int i = 0; i < mesh.NumLODs; i++)
                 {
                     int lod = reader.ReadInt32();
@@ -236,84 +268,87 @@ namespace BevelGenerator
                 }
             }
             
-            // Validate LODs
-            CheckLOD(mesh);
-
-            // Read Bones
-            for (int i = 0; i < mesh.NumBones; i++)
+            if (mesh.HasSkinning)
             {
-                float[] cf = new float[12];
-
-                Bone bone = new Bone()
+                // Read Bones
+                for (int i = 0; i < mesh.NumBones; i++)
                 {
-                    NameIndex = reader.ReadInt32(),
-                    Id = reader.ReadInt16(),
+                    float[] cf = new float[12];
 
-                    Parent = reader.ReadInt16(),
-                    Angle = reader.ReadSingle()
-                };
+                    Bone bone = new Bone()
+                    {
+                        NameIndex = reader.ReadInt32(),
+                        Id = reader.ReadInt16(),
 
-                for (int m = 0; m < 12; m++)
-                {
-                    int index = (m + 3) % 12;
-                    cf[index] = reader.ReadSingle();
+                        ParentId = reader.ReadInt16(),
+                        Unknown = reader.ReadSingle()
+                    };
+
+                    for (int m = 0; m < 12; m++)
+                    {
+                        int index = (m + 3) % 12;
+                        cf[index] = reader.ReadSingle();
+                    }
+
+                    bone.CFrame = new CFrame(cf);
+                    mesh.Bones.Add(bone);
                 }
 
-                bone.CFrame = new CFrame(cf);
-                mesh.Bones.Add(bone);
+                // Read Bone Names & Parents
+                var nameTable = reader.ReadBytes(mesh.NameTableSize);
+                mesh.NameTable = nameTable;
+
+                foreach (Bone bone in mesh.Bones)
+                {
+                    int index = bone.NameIndex;
+                    int parentId = bone.ParentId;
+
+                    var buffer = new List<byte>();
+
+                    while (true)
+                    {
+                        byte next = nameTable[index];
+
+                        if (next > 0)
+                            index++;
+                        else
+                            break;
+
+                        buffer.Add(next);
+                    }
+
+                    var result = buffer.ToArray();
+                    bone.Name = Encoding.UTF8.GetString(result);
+
+                    if (parentId >= 0)
+                    {
+                        var parent = mesh.Bones[parentId];
+                        bone.Parent = parent;
+                    }
+                }
+
+                // Read Skin Data?
+                for (int p = 0; p < mesh.NumSkinData; p++)
+                {
+                    var skinData = new SkinData()
+                    {
+                        FacesBegin = reader.ReadInt32(),
+                        FacesLength = reader.ReadInt32(),
+
+                        VertsBegin = reader.ReadInt32(),
+                        VertsLength = reader.ReadInt32(),
+
+                        NumBones = reader.ReadInt32(),
+                        BoneIndexTree = new short[26]
+                    };
+
+                    for (int i = 0; i < 26; i++)
+                        skinData.BoneIndexTree[i] = reader.ReadInt16();
+
+                    mesh.SkinData.Add(skinData);
+                }
             }
             
-            // Read Bone Names
-            var nameTable = reader.ReadBytes(mesh.NameTableSize);
-            mesh.NameTable = nameTable;
-
-            foreach (Bone bone in mesh.Bones)
-            {
-                int index = bone.NameIndex;
-                var buffer = new List<byte>();
-
-                while (true)
-                {
-                    byte next = nameTable[index];
-
-                    if (next > 0)
-                        index++;
-                    else
-                        break;
-
-                    buffer.Add(next);
-                }
-
-                var result = buffer.ToArray();
-                bone.Name = Encoding.UTF8.GetString(result);
-            }
-
-            // Read Skinning Data?
-            for (int p = 0; p < mesh.NumLinks; p++)
-            {
-                var link = new ParentLink();
-                mesh.Links.Add(link);
-
-                byte[] data = reader.ReadBytes(72);
-                var stream = new MemoryStream(data);
-                
-                using (var buffer = new BinaryReader(stream))
-                {
-                    int[] unknownA = new int[4];
-
-                    for (int i = 0; i < 4; i++)
-                        unknownA[i] = buffer.ReadInt32();
-
-                    int numUnknownB = buffer.ReadInt32();
-                    short[] unknownB = new short[numUnknownB];
-
-                    for (int i = 0; i < numUnknownB; i++)
-                        unknownB[i] = buffer.ReadInt16();
-
-                    link.UnknownA = unknownA;
-                    link.UnknownB = unknownB;
-                }
-            }
 
             Debugger.Break();
         }
@@ -342,11 +377,17 @@ namespace BevelGenerator
         public void Save(Stream stream)
         {
             const ushort HeaderSize = 16;
-            const byte   VertSize = 40;
-            const byte   FaceSize = 12;
-            const ushort LOD_Size = 4;
+            const byte   VertSize   = 40;
+            const byte   FaceSize   = 12;
+            const ushort LOD_Size   = 4;
             
-            byte[] VersionHeader = Encoding.ASCII.GetBytes("version 3.00\n");
+            byte[] VersionHeader = Encoding.UTF8.GetBytes("version 3.00\n");
+
+            if (NumLODs == 0)
+            {
+                NumLODs = 2;
+                LODs = new List<int> { 0, NumFaces };
+            }
 
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
@@ -424,9 +465,10 @@ namespace BevelGenerator
                 Verts = new List<Vertex>()
             };
 
+            var uvTable = new List<Vector3>();
             var posTable = new List<Vector3>();
             var normTable = new List<Vector3>();
-
+            
             var vertexLookup = new Dictionary<string, int>();
 
             using (StringReader reader = new StringReader(contents))
@@ -439,59 +481,87 @@ namespace BevelGenerator
                         continue;
 
                     string[] buffer = line.Split(' ');
-                    string cmd = buffer[0];
+                    string action = buffer[0];
 
-                    if (cmd == "v" || cmd == "vn")
+                    switch (action)
                     {
-                        float[] input = buffer
-                            .Skip(1)
-                            .Select(float.Parse)
-                            .ToArray();
-
-                        var value = new Vector3(input);
-                        var target = (cmd == "v" ? posTable : normTable);
-
-                        target.Add(value);
-                    }
-                    else if (cmd == "f")
-                    {
-                        int[] face = new int[3];
-
-                        for (int i = 0; i < 3; i++)
+                        case "v":
+                        case "vn":
+                        case "vt":
                         {
-                            string faceDef = buffer[i + 1];
-                            string[] indices = faceDef.Split('/');
+                            float[] input = buffer
+                                .Skip(1)
+                                .Select(float.Parse)
+                                .ToArray();
 
-                            int posId = int.Parse(indices[0]) - 1;
-                            int normId = int.Parse(indices[2]) - 1;
+                            var value = new Vector3(input);
+                            List<Vector3> target = null;
 
-                            string key = $"{posId}/{normId}";
-
-                            if (!vertexLookup.ContainsKey(key))
+                            switch (action)
                             {
-                                int faceId = mesh.NumVerts++;
-                                vertexLookup.Add(key, faceId);
-
-                                Vertex vert = new Vertex()
+                                case "v":
                                 {
-                                    Position = posTable[posId],
-                                    Normal = normTable[normId],
-                                    UV = new Vector3()
-                                };
-
-                                mesh.Verts.Add(vert);
+                                    target = posTable;
+                                    break;
+                                }
+                                case "vn":
+                                {
+                                    target = normTable;
+                                    break;
+                                }
+                                case "vt":
+                                {
+                                    target = uvTable;
+                                    break;
+                                }
                             }
 
-                            face[i] = vertexLookup[key];
+                            target.Add(value);
+                            break;
                         }
+                        case "f":
+                        {
+                            int[] face = new int[3];
 
-                        mesh.Faces.Add(face);
-                        mesh.NumFaces++;
+                            for (int i = 0; i < 3; i++)
+                            {
+                                string faceDef = buffer[i + 1];
+                                string[] indices = faceDef.Split('/');
+
+                                int uvId = int.Parse(indices[1]) - 1;
+                                int posId = int.Parse(indices[0]) - 1;
+                                int normId = int.Parse(indices[2]) - 1;
+
+                                string key = $"{posId}/{uvId}/{normId}";
+
+                                if (!vertexLookup.ContainsKey(key))
+                                {
+                                    int faceId = mesh.NumVerts++;
+                                    vertexLookup.Add(key, faceId);
+
+                                    Vertex vert = new Vertex()
+                                    {
+                                        Position = posTable[posId],
+                                        Normal = normTable[normId],
+                                        UV = uvTable[uvId]
+                                    };
+
+                                    mesh.Verts.Add(vert);
+                                }
+
+                                face[i] = vertexLookup[key];
+                            }
+
+                            mesh.Faces.Add(face);
+                            mesh.NumFaces++;
+
+                            break;
+                        }   
                     }
                 }
             }
 
-            return CheckLOD(mesh);
+            return mesh;
         }
 
         public static Mesh FromBuffer(byte[] data)
@@ -547,10 +617,12 @@ namespace BevelGenerator
 
         public static Mesh FromFile(string path)
         {
+            Mesh result;
+
             using (FileStream meshStream = File.OpenRead(path))
-            {
-                return FromStream(meshStream);
-            }
+                result = FromStream(meshStream);
+
+            return result;
         }
     }
 }
