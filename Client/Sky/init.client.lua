@@ -95,18 +95,34 @@ local toneMap do
 	Lighting.ShadowSoftness = 0.1
 end
 
+local dof = Instance.new("DepthOfFieldEffect")
+dof.FarIntensity = 0.15
+dof.InFocusRadius = 30
+dof.FocusDistance = 31
+dof.NearIntensity = 0.1
+dof.Name = "DOF_2006"
+dof.Enabled = false
+dof.Parent = Lighting
+
+local bloom = Instance.new("BloomEffect")
+bloom.Threshold = 0.7
+bloom.Enabled = false
+bloom.Intensity = 0.4
+bloom.Size = 50
+bloom.Name = "GLOW_2006"
+bloom.Parent = Lighting
+
 for i = 1, 3000 do
 	local bb = star:Clone()
-	local size = math.random(2, 6) / 2
 	bb.StudsOffsetWorldSpace = Vector3.new(r(), r(), r()).Unit * 2500
 	bb.Star.Transparency = (math.random(1, 4) - 1) / 4
-	-- bb.Size = UDim2.new(0, size, 0, size)
 	bb.Adornee = skyAdorn
 	bb.Parent = skyAdorn
 end
 
 local function updateSky()
 	local shadowState = TeleportService:GetTeleportSetting("StencilShadows")
+	local turboGraphics = TeleportService:GetTeleportSetting("TurboGraphics")
 	
 	if shadowState == nil then
 		TeleportService:SetTeleportSetting("StencilShadows", true)
@@ -131,6 +147,9 @@ local function updateSky()
 	
 	toneMap.Contrast = -0.15 * globalLight
 	toneMap.Saturation = 0.07 * globalLight
+
+	dof.Enabled = turboGraphics
+	bloom.Enabled = turboGraphics
 	
 	if TeleportService:GetTeleportSetting("ClassicSky") then
 		local camera = workspace.CurrentCamera
