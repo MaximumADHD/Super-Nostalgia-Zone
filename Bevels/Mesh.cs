@@ -374,6 +374,46 @@ namespace BevelGenerator
             NumLODs += 1;
         }
 
+        public void SaveV1(Stream stream)
+        {
+            using (StringWriter writer = new StringWriter())
+            {
+                writer.WriteLine("version 1.00");
+                writer.WriteLine(NumFaces);
+
+                for (int i = 0; i < NumFaces; i++)
+                {
+                    var face = Faces[i];
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        var vert = Verts[face[j]];
+
+                        writer.Write('[');
+                        writer.Write(vert.Position * 2f);
+
+                        writer.Write("][");
+                        writer.Write(vert.Normal);
+
+                        writer.Write("][");
+                        writer.Write(vert.UV.X);
+
+                        writer.Write(", ");
+                        writer.Write(vert.UV.Y);
+
+                        writer.Write(", 0]");
+                    }
+                }
+
+                using (BinaryWriter bin = new BinaryWriter(stream))
+                {
+                    string file = writer.ToString();
+                    byte[] mesh = Encoding.ASCII.GetBytes(file);
+                    stream.Write(mesh, 0, mesh.Length);
+                }
+            }
+        }
+
         public void Save(Stream stream)
         {
             const ushort HeaderSize = 16;
@@ -491,6 +531,7 @@ namespace BevelGenerator
                         {
                             float[] input = buffer
                                 .Skip(1)
+                                .Where(str => !string.IsNullOrEmpty(str))
                                 .Select(float.Parse)
                                 .ToArray();
 

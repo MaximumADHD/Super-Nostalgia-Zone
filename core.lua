@@ -20,6 +20,12 @@ local initMsg = Instance.new("Message")
 initMsg.Text = "INITIALIZING..."
 initMsg.Parent = workspace
 
+spawn(function ()
+	local StarterPlayerScripts = StarterPlayer:WaitForChild("StarterPlayerScripts")
+	local loader = StarterPlayerScripts:WaitForChild("PlayerScriptsLoader")
+	loader.Disabled = true
+end)
+
 if not workspace.FilteringEnabled then
 	initMsg.Text = "FATAL: Workspace.FilteringEnabled MUST be set to true!!!"
 	return 0

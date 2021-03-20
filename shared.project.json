@@ -1,45 +1,40 @@
 {
-    "name": "SNZ_SHARED",
+    "name": "MainModule",
     
     "tree":
     {
-        "$className": "Folder",
+        "$path": "shared.lua",
         
-        "MainModule":
+        "ReplicatedStorage":
         {
-            "$path": "shared.lua",
+            "$className": "Folder",
             
-            "ReplicatedStorage":
+            "ItemData":    { "$path": "Shared/ItemData"        },
+            "AssetUtil":   { "$path": "Shared/AssetUtil.lua"   },
+            "BrickColors": { "$path": "Shared/BrickColors.lua" },
+            "PlaceData":   { "$path": "Shared/PlaceData.lua"   },
+            
+            "SharedScripts":
             {
                 "$className": "Folder",
                 
-                "ItemData":    { "$path": "Shared/ItemData"        },
-                "AssetUtil":   { "$path": "Shared/AssetUtil.lua"   },
-                "BrickColors": { "$path": "Shared/BrickColors.lua" },
-                "PlaceData":   { "$path": "Shared/PlaceData.lua"   },
+                "Sky":     { "$path": "Client/Sky"     },
+                "Moon":    { "$path": "Client/Moon"    },
+                "SunRays": { "$path": "Client/SunRays" },
                 
-                "SharedScripts":
-                {
-                    "$className": "Folder",
-                    
-                    "Sky":     { "$path": "Client/Sky"     },
-                    "Moon":    { "$path": "Client/Moon"    },
-                    "SunRays": { "$path": "Client/SunRays" },
-                    
-                    "Mouse":     { "$path": "UI/Mouse/Mouse.client.lua"   },
-                    "FpsCap":    { "$path": "Client/FpsCap.client.lua"    },
-                    "LensFlare": { "$path": "Client/LensFlare.client.lua" }
-                }
-            },
+                "Mouse":     { "$path": "UI/Mouse/Mouse.client.lua"   },
+                "FpsCap":    { "$path": "Client/FpsCap.client.lua"    },
+                "LensFlare": { "$path": "Client/LensFlare.client.lua" }
+            }
+        },
+        
+        "ServerStorage":
+        {
+            "$className": "Folder",
             
-            "ServerStorage":
+            "PlayerDataStore":
             {
-                "$className": "Folder",
-                
-                "PlayerDataStore":
-                {
-                    "$path": "Server/Resources/PlayerDataStore.lua"
-                }
+                "$path": "Server/Resources/PlayerDataStore.lua"
             }
         }
     }

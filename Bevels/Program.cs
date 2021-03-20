@@ -217,7 +217,6 @@ namespace BevelGenerator
                     RenderFidelity = RenderFidelity.Automatic,
 
                     PhysicsData = union.PhysicsData,
-                    CollisionFidelity = CollisionFidelity.Box,
                     PhysicalConfigData = union.PhysicalConfigData,
                 };
 
@@ -256,7 +255,7 @@ namespace BevelGenerator
             using (FileStream file = File.OpenWrite(filePath))
             {
                 file.SetLength(0);
-                mesh.Save(file);
+                mesh.SaveV1(file);
             }
 
             return mesh;
