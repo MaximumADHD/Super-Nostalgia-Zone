@@ -4,6 +4,6 @@
     "properties":
     {
         "BackgroundTransparency": 1,
-        "Size": [1, 0, 1, 0]
+        "Size": {"UDim2": [[1, 0], [1, 0]]}
     }
 }

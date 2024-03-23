@@ -3,10 +3,8 @@
 
     "Properties":
     {
+		"Archivable": true,
         "PaddingBottom": 
-        {
-            "Type": "UDim",
-            "Value": [0, 20]
-        }
+		{"UDim": [0, 20]}
     }
 }

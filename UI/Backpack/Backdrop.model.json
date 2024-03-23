@@ -5,7 +5,7 @@
     {
         "BackgroundColor3": [0.706, 0.706, 0.706],
         "BackgroundTransparency": 0.5,
-        "Size": [0, 0, 1, 0],
+        "Size": {"UDim2": [[0, 0], [1, 0]]},
         "ZIndex": 0
     }
 }
