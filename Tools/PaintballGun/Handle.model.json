@@ -5,17 +5,9 @@
 	{
 		"Size": [3, 2, 1],
 		
-		"TopSurface":
-		{
-			"Type": "Enum",
-			"Value": 0
-		},
+		"TopSurface":"Smooth",
 		
-		"BottomSurface":
-		{
-			"Type": "Enum",
-			"Value": 0
-		}
+		"BottomSurface":"Smooth"
 	},
 	
 	"Children":
