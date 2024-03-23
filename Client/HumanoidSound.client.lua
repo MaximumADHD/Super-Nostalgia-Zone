@@ -39,6 +39,15 @@ local function createSound(name, fileName, parent)
 	return sound
 end
 
+local function createSound2(name, fileName, parent)
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://" .. fileName
+	sound.Parent = parent
+	sound.Name = name
+	
+	return sound
+end
+
 local function promiseChild(object, name, andThen, ...)
 	local args = {...}
 	
@@ -85,7 +94,7 @@ local function onSoundMounted(humanoid)
 		local fallingDown = createSound("FallingDown", "splat.wav", rootPart)
 		humanoid.FallingDown:Connect(mountSoundToState(fallingDown))
 		
-		local freeFalling = createSound("FreeFall", "swoosh.wav", rootPart)
+		local freeFalling = createSound2("FreeFall", "12222200", rootPart)
 		humanoid.FreeFalling:Connect(mountSoundToState(freeFalling))
 		
 		for soundName, soundAction in pairs(soundActions) do
