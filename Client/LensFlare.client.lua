@@ -62,6 +62,7 @@ local LENSES =
 
 local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
+local TeleportService = game:GetService("TeleportService")
 
 local c = workspace.CurrentCamera
 local lensFlareNode = c:FindFirstChild("LensFlareNode")
@@ -139,6 +140,7 @@ local function createLenseBeam(lense,id)
 end
 
 local function updateLensFlare()
+if TeleportService:GetTeleportSetting("ClassicSky") then
 	local vpSize = c.ViewportSize
 	local sunDir = Lighting:GetSunDirection()
 	local sunWrldSpace = sunDir * 10e6
@@ -158,6 +160,9 @@ local function updateLensFlare()
 			lense.A1.CFrame = lenseCF * CFrame.new(radius/2,0,0)
 		end
 	end
+end
+
+lensFlareNode.Parent = nil
 end
 
 RunService:BindToRenderStep("UpdateLensFlare",201,updateLensFlare)
