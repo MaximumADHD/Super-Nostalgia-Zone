@@ -6,7 +6,7 @@
         "AnchorPoint": [1, 1],
         "BackgroundTransparency": 1,
         
-        "Size": [0, 70, 0, 70],
-        "Position": [1, 0, 1, 0]
+        "Size": {"UDim2": [[0, 70], [0, 70]]},
+        "Position": {"UDim2": [[1, 0], [1, 0]]}
     }
 }

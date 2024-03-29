@@ -3,9 +3,9 @@
 
     "properties":
     {
-        "Size": [1, 0, 1, 0],
+        "Size": {"UDim2": [[1, 0], [1, 0]]},
         "AnchorPoint": [0, 1],
-        "Position": [0, 0, 1, 0],
+        "Position": {"UDim2": [[0, 0], [1, 0]]},
         "BackgroundTransparency": 1
     }
 }

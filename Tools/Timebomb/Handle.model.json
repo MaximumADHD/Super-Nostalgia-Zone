@@ -3,11 +3,7 @@
 	
 	"Properties":
 	{	
-		"Shape":
-		{
-			"Type": "Enum",
-			"Value": 0
-		},
+		"Shape": "Ball",
 		
 		"Size": [2, 2, 2]
 	},

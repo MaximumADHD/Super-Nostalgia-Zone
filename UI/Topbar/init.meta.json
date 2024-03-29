@@ -4,7 +4,7 @@
     "properties":
     {
         "BackgroundTransparency": 1,
-        "Position": [0, 80, 0, 0],
-        "Size": [0, 100, 0, 20]
+        "Position": {"UDim2": [[0, 80], [0, 0]]},
+        "Size": {"UDim2": [[0, 100], [0, 20]]}
     }
 }
