@@ -234,10 +234,15 @@ animRemoved:Connect(onAnimatorRemoved)
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local desiredFPS = 30 -- The framerate that would be expected given the MaxVelocity in use.
+local lastUpdate = os.clock()
 
-local function updateAnimations(deltaTime)
+local function updateAnimations()
+	local now = os.clock()
+	local deltaTime = math.min(0.1, now - lastUpdate)
+
 	local velocityAdjust = desiredFPS * deltaTime
-	
+	lastUpdate = now
+
 	for humanoid, animator in pairs(Animators) do
 		-- Update the motor states
 		animator:Update()
@@ -271,6 +276,6 @@ local function updateAnimations(deltaTime)
 	end
 end
 
-RunService:BindToRenderStep("UpdateAnimations", 301, updateAnimations)
+RunService.Stepped:Connect(updateAnimations)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
