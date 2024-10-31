@@ -1,9 +1,7 @@
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TextChatService = game:GetService("TextChatService")
 local GuiService = game:GetService("GuiService")
-
-local camera = workspace.CurrentCamera
-local resUpdate = camera:GetPropertyChangedSignal("ViewportSize")
 
 local safeChat = script.Parent
 local chatButton = safeChat:WaitForChild("ChatButton")
@@ -24,13 +22,9 @@ local safeChatTree = require(mSafeChatTree)
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Safe Chat Tree
 
-local chatRemote = ReplicatedStorage:WaitForChild("ChatRemote")
 local templates = safeChat:WaitForChild("Templates")
-
 local tempBranch = templates:WaitForChild("TempBranch")
 local tempButton = templates:WaitForChild("TempButton")
-
-local isActivated = false
 local rootTree
 
 local function recursivelyDeactivateTree(obj)
@@ -46,9 +40,7 @@ local function recursivelyDeactivateTree(obj)
 end
 
 local function deactivateRootTree()
-	isActivated = false
 	chatButton.Image = IMG_CHAT
-
 	recursivelyDeactivateTree(rootTree)
 	
 	if GuiService.SelectedObject then
@@ -58,7 +50,6 @@ local function deactivateRootTree()
 end
 
 local function activateRootTree()
-	isActivated = true
 	rootTree.Visible = true
 	chatButton.Image = IMG_CHAT_DN
 	
@@ -75,7 +66,6 @@ local function assembleTree(tree)
 	local currentBranch
 	
 	for i, branch in ipairs(tree.Branches) do
-		local branches = branch.Branches
 		local label = branch.Label
 
 		local button = tempButton:Clone()
@@ -107,11 +97,16 @@ local function assembleTree(tree)
 					submit = false
 				end
 			end
-			
+
 			if submit then
+				local rbxGeneral = TextChatService:FindFirstChild("RBXGeneral", true)
+
+				if rbxGeneral and rbxGeneral:IsA("TextChannel") then
+					rbxGeneral:SendAsync(label)
+				end
+
 				click:Play()
 				deactivateRootTree()
-				chatRemote:FireServer(label)
 			end			
 		end
 		

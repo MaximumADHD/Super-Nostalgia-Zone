@@ -3,39 +3,29 @@
 --------------------------------------------------------------------------------------------
 
 local Debris = game:GetService("Debris")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local TextService = game:GetService("TextService")
+local Players = game:GetService("Players")
+local TextChatService = game:GetService("TextChatService")
 local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local chat = script.Parent
 local util = chat:WaitForChild("Utility")
 
 local chatBar = chat:WaitForChild("ChatBar")
 local chatOutput = chat:WaitForChild("ChatOutput")
-local chatRemote = ReplicatedStorage:WaitForChild("ChatRemote")
-
 local focusBackdrop = chatBar:WaitForChild("FocusBackdrop")
 local mainBackdrop = chat:WaitForChild("MainBackdrop")
 local messageTemplate = util:WaitForChild("MessageTemplate")
 
+local TextChannels = TextChatService:WaitForChild("TextChannels")
 local LinkedList = require(util:WaitForChild("LinkedList"))
-
-local success, RobloxChatMount = pcall(function ()
-	local chatMount = util:WaitForChild("RobloxChatMount")
-	return require(chatMount)
-end)
-
-if not success then
-	RobloxChatMount = nil
-end
+local SafeChat = require(ReplicatedStorage.SafeChat)
 
 --------------------------------------------------------------------------------------------------------------------------------------
 -- Player Colors
 --------------------------------------------------------------------------------------------------------------------------------------
 
-local PLAYER_COLORS = 
-{
+local PLAYER_COLORS = {
 	[0] = Color3.fromRGB(173,  35,  35); -- red
 	[1] = Color3.fromRGB( 42,  75, 215); -- blue
 	[2] = Color3.fromRGB( 29, 105,  20); -- green
@@ -65,7 +55,7 @@ local function computePlayerColor(player)
 			else
 				value = value + char	
 			end 
-		end 
+		end
 		
 		return PLAYER_COLORS[value % 8]
 	end
@@ -99,90 +89,103 @@ local function onInputBegan(input, processed)
 end
 
 local function onChatFocusLost(enterPressed)
-	local msg = chatBar.Text
-	
+	local msg: string = chatBar.Text
+	mainBackdrop.BackgroundColor3 = focusBackdrop.BackgroundColor3
+	focusBackdrop.Visible = false
+	chatBar.Text = ""
+
 	if enterPressed and #msg > 0 then
 		if #msg > 128 then
 			msg = msg:sub(1, 125) .. "..."
 		end
-		
-		chatRemote:FireServer(msg)
-		
-		if RobloxChatMount then
-			RobloxChatMount.ChatWindow.MessagePosted:Fire(msg)
+
+		local player = Players.LocalPlayer
+		local channel = TextChannels:FindFirstChild("RBXGeneral")
+
+		if msg:sub(1, 1) == "%" then
+			local teamColor = player.TeamColor
+			local teamChannel = TextChannels:FindFirstChild(`RBXTeam{teamColor.Name}`)
+
+			if teamChannel then
+				channel = teamChannel
+			end
+
+			msg = msg:sub(2)
+		elseif msg:sub(1, 3) == "/sc" then
+			local indices = msg:sub(4):split(" ")
+			local tree = SafeChat
+
+			for i, index in indices do
+				local num = 1 + (tonumber(index) or 0)
+				tree = tree.Branches[num]
+			end
+
+			msg = tree.Label
+		end
+
+		if channel and channel:IsA("TextChannel") then
+			channel:SendAsync(msg)
 		end
 	end
-	
-	chatBar.Text = ""
-	focusBackdrop.Visible = false
-	mainBackdrop.BackgroundColor3 = focusBackdrop.BackgroundColor3
 end
-
-UserInputService.InputBegan:Connect(onInputBegan)
 
 chatBar.Focused:Connect(beginChatting)
 chatBar.FocusLost:Connect(onChatFocusLost)
+UserInputService.InputBegan:Connect(onInputBegan)
 
 --------------------------------------------------------------------------------------------
 -- Chat Output
 --------------------------------------------------------------------------------------------
 
 local messageId = 0
-local blank_v2 = Vector2.new()
 local chatQueue = LinkedList.new()
 
-local function computeTextBounds(label)
-	local bounds = TextService:GetTextSize(label.Text, label.TextSize, label.Font, blank_v2)
-	return UDim2.new(0, bounds.X, 0, bounds.Y)
-end
-
 local function getMessageId()
-	messageId = messageId + 1
+	messageId += 1
 	return messageId
 end
 
-local function onReceiveChat(player, message, wasFiltered)
-	-- Process the message
-	if message:sub(1, 1) == "%" then
-		message = "(TEAM) " .. message:sub(2)
+local function onIncomingMessage(message: TextChatMessage)
+	local source = message.TextSource
+	local player = source and Players:GetPlayerByUserId(source.UserId)
+
+	if not player then
+		return
 	end
-	
-	if wasFiltered then
-		message = message:gsub("#[# ]+#", "[ Content Deleted ]")
-	end
-	
+
+	local text = message.Text
+	text = text:gsub("#[# ]+#", "[ Content Deleted ]")
+
 	-- Create the message
 	local msg = messageTemplate:Clone()
 	
 	local playerLbl = msg:WaitForChild("PlayerName")
 	playerLbl.TextColor3 = computePlayerColor(player)
 	playerLbl.TextStrokeColor3 = playerLbl.TextColor3
+	playerLbl.AutomaticSize = Enum.AutomaticSize.XY
 	playerLbl.Text = player.Name .. ";  "
-	playerLbl.Size = computeTextBounds(playerLbl)
 	
 	local msgLbl = msg:WaitForChild("Message")
-	msgLbl.Text = message
-	msgLbl.Size = computeTextBounds(msgLbl)
+	msgLbl.AutomaticSize = Enum.AutomaticSize.XY
+	msgLbl.Text = text
 
-	local width = playerLbl.AbsoluteSize.X + msgLbl.AbsoluteSize.X
-	
-	msg.Size = msg.Size + UDim2.new(0, width, 0, 0)
+	msg.AutomaticSize = Enum.AutomaticSize.X
 	msg.LayoutOrder = getMessageId()
-	
+
 	msg.Name = "Message" .. msg.LayoutOrder
 	msg.Parent = chatOutput
-	
+
 	if chatQueue.size == 6 then
 		local front = chatQueue.front
 		front.data:Destroy()
-		
+
 		chatQueue:Remove(front.id)
 	end
-	
+
 	chatQueue:Add(msg)
 	Debris:AddItem(msg, 60)
 end
 
-chatRemote.OnClientEvent:Connect(onReceiveChat)
+TextChatService.MessageReceived:Connect(onIncomingMessage)
 
 --------------------------------------------------------------------------------------------

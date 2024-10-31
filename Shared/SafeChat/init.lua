@@ -6,12 +6,12 @@ local safeChatTree =
 
 do
 	local treeData = script:WaitForChild("RawTreeData")
-	treeData = treeData.Value
+	local str = treeData.Value
 	
 	local stack = {}
 	stack[0] = safeChatTree
 	
-	for line in treeData:gmatch("[^\n]+") do
+	for line in str:gmatch("[^\n]+") do
 		if #line > 0 then
 			local stackIndex = 0
 
