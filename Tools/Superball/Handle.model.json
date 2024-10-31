@@ -6,11 +6,13 @@
 		"Color": [0.768628, 0.156863, 0.109804],
 		"Reflectance": 0.2,
 		
-		"Material": "SmoothPlastic",
-		
 		"Shape": "Ball",
 		
-		"Size": [2, 2, 2]
+		"Size": [2, 2, 2],
+
+		"TopSurface": "Smooth",
+		
+		"BottomSurface": "Smooth"
 	},
 	
 	"Children":
